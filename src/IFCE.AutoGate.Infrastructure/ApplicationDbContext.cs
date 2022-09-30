@@ -21,6 +21,7 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        builder.ApplyDefaultIgnoreModels();
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         builder.ApplyForeignKeysBehavior();
         builder.ApplyTrackingBehavior();

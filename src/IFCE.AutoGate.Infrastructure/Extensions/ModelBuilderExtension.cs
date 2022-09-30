@@ -1,4 +1,5 @@
 using IFCE.AutoGate.Core.Contracts;
+using IFCE.AutoGate.Core.Messages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -33,6 +34,11 @@ public static class ModelBuilderExtension
         var foreignKeys = builder.GetEntities<IEntity>().SelectMany(e => e.GetForeignKeys());
 
         foreach (var foreignKey in foreignKeys) foreignKey.DeleteBehavior = DeleteBehavior.ClientSetNull;
+    }
+
+    public static void ApplyDefaultIgnoreModels(this ModelBuilder builder)
+    {
+        builder.Ignore<Event>();
     }
 
     private static IEnumerable<IMutableEntityType> GetEntities<T>(this ModelBuilder builder)
