@@ -2,7 +2,7 @@ using IFCE.AutoGate.Core.Contracts;
 
 namespace IFCE.AutoGate.Core.DomainObjects;
 
-public class Entity : IEntity
+public abstract class Entity : IEntity, ITracking
 {
     protected Entity()
     {
@@ -10,6 +10,24 @@ public class Entity : IEntity
     }
 
     public Guid Id { get; protected set; }
+    public DateTime CreatedAt { get; protected set; }
+    public int? CreatedBy { get; protected set; }
+    public DateTime ModifiedAt { get; protected set; }
+    public int? ModifiedBy { get; protected set; }
+
+    public void ChangeModifier(int? id)
+    {
+        ModifiedBy = id;
+        ModifiedAt = DateTime.Now;
+    }
+
+    public void AddCreator(int? id)
+    {
+        if (CreatedBy is null) throw new InvalidOperationException("There is already a creator set for this entity");
+
+        CreatedBy = id;
+        CreatedAt = DateTime.Now;
+    }
 
     public override bool Equals(object obj)
     {
