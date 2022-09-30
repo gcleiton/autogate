@@ -6,13 +6,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IFCE.AutoGate.Infrastructure;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : DbContext, IUnitOfWork
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
 
     public DbSet<Administrator> Administrators { get; set; }
+
+    public async Task Commit()
+    {
+        await SaveChangesAsync();
+    }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
