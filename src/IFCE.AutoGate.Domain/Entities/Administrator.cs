@@ -2,7 +2,7 @@ using IFCE.AutoGate.Core.DomainObjects;
 
 namespace IFCE.AutoGate.Domain.Entities;
 
-public class Administrator : Entity
+public class Administrator : Entity, IAggregateRoot
 {
     public Administrator(string name, string email)
     {
