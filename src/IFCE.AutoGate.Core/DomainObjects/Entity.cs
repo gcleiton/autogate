@@ -23,7 +23,8 @@ public abstract class Entity : IEntity, ITracking
 
     public void AddCreator(int? id)
     {
-        if (CreatedBy is null) throw new InvalidOperationException("There is already a creator set for this entity");
+        if (CreatedBy is not null)
+            throw new InvalidOperationException("There is already a creator set for this entity");
 
         CreatedBy = id;
         CreatedAt = DateTime.Now;
