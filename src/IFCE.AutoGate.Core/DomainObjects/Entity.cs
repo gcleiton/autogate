@@ -1,19 +1,26 @@
 using IFCE.AutoGate.Core.Contracts;
+using IFCE.AutoGate.Core.Messages;
 
 namespace IFCE.AutoGate.Core.DomainObjects;
 
 public abstract class Entity : IEntity, ITracking
 {
+    private readonly List<Event> _notifications;
+
     protected Entity()
     {
-        Id = new Guid();
+        Id = Guid.NewGuid();
+        _notifications = new List<Event>();
     }
+
+    public IReadOnlyCollection<Event> Notifications => _notifications.AsReadOnly();
 
     public Guid Id { get; protected set; }
     public DateTime CreatedAt { get; protected set; }
     public int? CreatedBy { get; protected set; }
     public DateTime ModifiedAt { get; protected set; }
     public int? ModifiedBy { get; protected set; }
+
 
     public void ChangeModifier(int? id)
     {
@@ -29,6 +36,36 @@ public abstract class Entity : IEntity, ITracking
         CreatedBy = id;
         CreatedAt = DateTime.Now;
     }
+
+    #region Overrides
+
+    public override string ToString()
+    {
+        return $"{GetType().Name} [Id={Id}]";
+    }
+
+    #endregion
+
+    #region Notifications
+
+    public void AddNotification(Event notification)
+    {
+        _notifications.Add(notification);
+    }
+
+    public void RemoveNotification(Event notification)
+    {
+        _notifications.Remove(notification);
+    }
+
+    public void ClearNotifications()
+    {
+        _notifications.Clear();
+    }
+
+    #endregion
+
+    #region Comparisons
 
     public override bool Equals(object obj)
     {
@@ -61,8 +98,5 @@ public abstract class Entity : IEntity, ITracking
         return GetType().GetHashCode() * 907 + Id.GetHashCode();
     }
 
-    public override string ToString()
-    {
-        return $"{GetType().Name} [Id={Id}]";
-    }
+    #endregion
 }
