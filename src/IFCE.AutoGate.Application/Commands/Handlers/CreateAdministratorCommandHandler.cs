@@ -1,4 +1,5 @@
 using FluentValidation;
+using IFCE.AutoGate.Application.Events;
 using IFCE.AutoGate.Core.Communication;
 using IFCE.AutoGate.Core.Contracts;
 using IFCE.AutoGate.Core.Messages;
@@ -31,6 +32,11 @@ public class CreateAdministratorCommandHandler : CommandHandler<CreateAdministra
 
         var administrator = new Administrator(command.Name, command.Email);
         administrator.ForgetPassword();
+
+        var createdEvent = new AdministratorCreatedEvent(administrator.Name, administrator.Email,
+            administrator.RecoveryPasswordCode ?? Guid.Empty);
+        administrator.AddNotification(createdEvent);
+
         _administratorRepository.Add(administrator);
         await _administratorRepository.UnitOfWork.Commit();
 
