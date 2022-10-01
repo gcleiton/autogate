@@ -18,4 +18,9 @@ public class MediatorHandler : IMediatorHandler
     {
         return await _mediator.Send(command);
     }
+
+    public async Task PublishEvent(Event message)
+    {
+        await _mediator.Publish(message);
+    }
 }
