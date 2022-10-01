@@ -18,7 +18,7 @@ public class Administrator : Entity, IAggregateRoot
 
     public void ForgetPassword()
     {
-        RecoveryPasswordCode = new Guid();
+        RecoveryPasswordCode = Guid.NewGuid();
         var expiresAt = DateTime.Now.AddHours(2);
         RecoveryPasswordExpiresAt = expiresAt;
     }
