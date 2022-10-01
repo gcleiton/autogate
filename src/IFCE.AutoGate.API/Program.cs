@@ -2,11 +2,13 @@ using IFCE.AutoGate.API.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure services
+var configuration = builder.Configuration.SetDefaultConfiguration(builder.Environment);
 
+// Configure services
 builder.Services.AddApiConfiguration();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDatabaseConfiguration(builder.Configuration);
+builder.Services.AddSettingsConfiguration(configuration);
 builder.Services.ConfigureDependencies();
 
 var app = builder.Build();
