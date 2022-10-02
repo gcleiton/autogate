@@ -18,5 +18,6 @@ public static class DependencyInjectionConfiguration
         services.AddScoped<IMediatorHandler, MediatorHandler>();
         services.AddScoped<IAdministratorRepository, AdministratorRepository>();
         services.AddScoped<IMailSender, MailKitMailSender>();
+        services.AddScoped<IHasher>(s => new BcryptHasher(12));
     }
 }
