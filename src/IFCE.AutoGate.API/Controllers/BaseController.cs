@@ -8,6 +8,11 @@ namespace IFCE.AutoGate.API.Controllers;
 [ApiController]
 public abstract class BaseController : Controller
 {
+    protected IActionResult OkResponse(string message)
+    {
+        return Ok(new OkResponse(message));
+    }
+
     protected IActionResult CreatedResponse(IResult result, string uri, string message)
     {
         return ResponseResult(result, Created(uri, new CreatedResponse(message)));
