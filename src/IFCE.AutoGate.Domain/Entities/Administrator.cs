@@ -22,4 +22,18 @@ public class Administrator : Entity, IAggregateRoot
         var expiresAt = DateTime.Now.AddHours(2);
         RecoveryPasswordExpiresAt = expiresAt;
     }
+
+    public void ChangePassword(string password)
+    {
+        Password = password;
+        RecoveryPasswordCode = null;
+        RecoveryPasswordExpiresAt = null;
+    }
+
+    public bool IsRecoveryPasswordValid()
+    {
+        if (RecoveryPasswordCode is null) return false;
+
+        return RecoveryPasswordExpiresAt > DateTime.Now;
+    }
 }
