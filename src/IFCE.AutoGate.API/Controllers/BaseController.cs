@@ -13,6 +13,16 @@ public abstract class BaseController : Controller
         return ResponseResult(result, Created(uri, new CreatedResponse(message)));
     }
 
+    protected IActionResult NoContentResponse(IResult result)
+    {
+        return ResponseResult(result, NoContent());
+    }
+
+    protected IActionResult NotFoundResponse(string message)
+    {
+        return NotFound(new NotFoundResponse(message));
+    }
+
     protected IActionResult UnprocessableEntityResponse(string message, IEnumerable<string> errors)
     {
         return UnprocessableEntity(new UnprocessableEntityResponse(message, errors));
@@ -30,6 +40,8 @@ public abstract class BaseController : Controller
             var error = result.Error;
             switch (error)
             {
+                case NotFoundError:
+                    return NotFoundResponse(error.Message);
                 case AlreadyExistsError:
                     return ConflictResponse(error.Message);
                 case ValidationError validationError:
