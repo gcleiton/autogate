@@ -3,7 +3,7 @@ using IFCE.AutoGate.Application.Commands;
 
 namespace IFCE.AutoGate.Application.Validators;
 
-public class ChangePasswordAdministratorValidator : AbstractValidator<ChangePasswordAdministratorCommand>
+public class ChangePasswordAdministratorValidator : AbstractValidator<ChangePasswordCommand>
 {
     public ChangePasswordAdministratorValidator()
     {

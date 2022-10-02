@@ -9,20 +9,20 @@ using MediatR;
 
 namespace IFCE.AutoGate.Application.Commands.Handlers;
 
-public class ChangePasswordAdministratorCommandHandler : CommandHandler<ChangePasswordAdministratorCommand>,
-    IRequestHandler<ChangePasswordAdministratorCommand, IResult>
+public class ChangePasswordCommandHandler : CommandHandler<ChangePasswordCommand>,
+    IRequestHandler<ChangePasswordCommand, IResult>
 {
     private readonly IAdministratorRepository _administratorRepository;
     private readonly IHasher _hasher;
 
-    public ChangePasswordAdministratorCommandHandler(IValidator<ChangePasswordAdministratorCommand> validator,
+    public ChangePasswordCommandHandler(IValidator<ChangePasswordCommand> validator,
         IAdministratorRepository administratorRepository, IHasher hasher) : base(validator)
     {
         _administratorRepository = administratorRepository;
         _hasher = hasher;
     }
 
-    public async Task<IResult> Handle(ChangePasswordAdministratorCommand message, CancellationToken cancellationToken)
+    public async Task<IResult> Handle(ChangePasswordCommand message, CancellationToken cancellationToken)
     {
         var errors = Validate(message);
         if (errors.Any()) return Result.Failure(new ValidationError(errors));

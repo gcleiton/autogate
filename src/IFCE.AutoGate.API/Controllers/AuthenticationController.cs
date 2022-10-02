@@ -15,7 +15,7 @@ public class AuthenticationController : BaseController
     }
 
     [HttpPost("change-password")]
-    public async Task<IActionResult> ChangePassword(ChangePasswordAdministratorCommand command)
+    public async Task<IActionResult> ChangePassword(ChangePasswordCommand command)
     {
         var result = await _mediator.SendCommand(command);
 
