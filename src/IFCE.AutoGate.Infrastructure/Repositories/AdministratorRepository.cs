@@ -19,4 +19,14 @@ public class AdministratorRepository : Repository<Administrator>, IAdministrator
     {
         _context.Administrators.Add(administrator);
     }
+
+    public void Update(Administrator administrator)
+    {
+        _context.Administrators.Update(administrator);
+    }
+
+    public async Task<Administrator> LoadByRecoveryPasswordCode(Guid code)
+    {
+        return await _context.Administrators.FirstOrDefaultAsync(a => a.RecoveryPasswordCode == code);
+    }
 }
