@@ -8,6 +8,7 @@ var configuration = builder.Configuration.SetDefaultConfiguration(builder.Enviro
 builder.Services.AddApiConfiguration();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDatabaseConfiguration(builder.Configuration);
+builder.Services.AddAuthenticationConfiguration(builder.Configuration);
 builder.Services.AddSettingsConfiguration(configuration);
 builder.Services.ConfigureDependencies();
 
@@ -21,6 +22,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseApiConfiguration();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.Run();
