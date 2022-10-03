@@ -1,4 +1,6 @@
 using IFCE.AutoGate.Application.Commands;
+using IFCE.AutoGate.Application.Requests;
+using IFCE.AutoGate.Core.Contracts;
 using IFCE.AutoGate.Domain.Contracts.Gateways;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,10 +10,19 @@ namespace IFCE.AutoGate.API.Controllers;
 public class AuthenticationController : BaseController
 {
     private readonly IMediatorHandler _mediator;
+    private readonly INotification _notification;
 
-    public AuthenticationController(IMediatorHandler mediator)
+    public AuthenticationController(INotification notification, IMediatorHandler mediator) : base(notification)
     {
         _mediator = mediator;
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(LoginRequest request)
+    {
+        var accessToken = await _mediator.SendRequest(request);
+
+        return OkResponse(accessToken);
     }
 
     [HttpPost("change-password")]
