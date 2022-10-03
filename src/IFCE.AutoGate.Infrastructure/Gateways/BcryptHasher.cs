@@ -15,4 +15,9 @@ public class BcryptHasher : IHasher
     {
         return BCrypt.Net.BCrypt.HashPassword(plaintext, _salt);
     }
+
+    public bool Validate(string plaintext, string digest)
+    {
+        return BCrypt.Net.BCrypt.Verify(plaintext, digest);
+    }
 }
