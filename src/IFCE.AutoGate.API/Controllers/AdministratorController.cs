@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IFCE.AutoGate.API.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/administrators")]
 public class AdministratorController : BaseController
 {
     private readonly IMediatorHandler _mediator;
