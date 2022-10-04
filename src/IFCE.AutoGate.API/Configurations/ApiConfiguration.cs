@@ -8,6 +8,16 @@ public static class ApiConfiguration
     {
         services.AddControllers();
         services.AddEndpointsApiExplorer();
+        services.AddCors(o =>
+        {
+            o.AddPolicy("default", policy =>
+            {
+                policy
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+        });
         services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
     }
 
@@ -15,5 +25,6 @@ public static class ApiConfiguration
     {
         app.UseHttpsRedirection();
         app.MapControllers();
+        app.UseCors("default");
     }
 }
