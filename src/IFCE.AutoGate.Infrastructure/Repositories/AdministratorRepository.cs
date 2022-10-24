@@ -1,3 +1,6 @@
+using IFCE.AutoGate.Core.Contracts;
+using IFCE.AutoGate.Core.DomainObjects;
+using IFCE.AutoGate.Core.Messages;
 using IFCE.AutoGate.Domain.Contracts.Repositories;
 using IFCE.AutoGate.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +11,17 @@ public class AdministratorRepository : Repository<Administrator>, IAdministrator
 {
     public AdministratorRepository(ApplicationDbContext context) : base(context)
     {
+    }
+
+    public async Task<PaginatedList<Administrator>> LoadAll(
+        PaginatedQuery<Administrator, IPaginationResult<Administrator>> query)
+    {
+        var queryable = _context.Administrators.AsQueryable();
+
+        query.ApplyFilter(ref queryable);
+        query.ApplyOrder(ref queryable);
+
+        return await Task.FromResult(new PaginatedList<Administrator>(queryable, query.Page, query.PageSize));
     }
 
     public async Task<bool> CheckByEmail(string email)
