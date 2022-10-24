@@ -27,6 +27,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\IFCE.AutoGate.Application\IFCE.AutoGate.Application.csproj" />
       <ProjectReference Include="..\IFCE.AutoGate.Domain\IFCE.AutoGate.Domain.csproj" />
     </ItemGroup>
 
