@@ -7,5 +7,6 @@ public interface IMediatorHandler
 {
     Task<TResponse> SendRequest<TResponse>(Request<TResponse> request);
     Task<IResult> SendCommand(Command command);
+    Task<TResponse> SendQuery<TEntity, TResponse>(Query<TEntity, TResponse> query) where TEntity : IEntity;
     Task PublishEvent(Event message);
 }

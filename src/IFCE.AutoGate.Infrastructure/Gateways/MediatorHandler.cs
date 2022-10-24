@@ -24,6 +24,11 @@ public class MediatorHandler : IMediatorHandler
         return await _mediator.Send(command);
     }
 
+    public async Task<TResponse> SendQuery<TEntity, TResponse>(Query<TEntity, TResponse> query) where TEntity : IEntity
+    {
+        return await _mediator.Send(query);
+    }
+
     public async Task PublishEvent(Event message)
     {
         await _mediator.Publish(message);
