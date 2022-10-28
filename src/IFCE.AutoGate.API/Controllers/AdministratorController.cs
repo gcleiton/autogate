@@ -1,4 +1,5 @@
 using IFCE.AutoGate.Application.UseCases.CreateAdministrator;
+using IFCE.AutoGate.Application.UseCases.LoadAdministratorById;
 using IFCE.AutoGate.Application.UseCases.LoadAdministrators;
 using IFCE.AutoGate.Core.Contracts;
 using IFCE.AutoGate.Domain.Contracts.Gateways;
@@ -30,6 +31,14 @@ public class AdministratorController : BaseController
     public async Task<IActionResult> LoadAll([FromQuery] LoadAdministratorsQuery query)
     {
         var result = await _mediator.SendQuery(query);
+
+        return OkResponse(result);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> LoadById(Guid id)
+    {
+        var result = await _mediator.SendQuery(new LoadAdministratorByIdQuery(id));
 
         return OkResponse(result);
     }
