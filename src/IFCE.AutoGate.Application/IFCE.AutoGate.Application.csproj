@@ -15,5 +15,5 @@
         <ProjectReference Include="..\IFCE.AutoGate.Domain\IFCE.AutoGate.Domain.csproj" />
         <ProjectReference Include="..\IFCE.AutoGate.Infrastructure\IFCE.AutoGate.Infrastructure.csproj" />
     </ItemGroup>
-
+    
 </Project>
