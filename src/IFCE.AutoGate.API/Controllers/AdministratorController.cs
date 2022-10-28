@@ -1,4 +1,5 @@
 using IFCE.AutoGate.Application.UseCases.CreateAdministrator;
+using IFCE.AutoGate.Application.UseCases.DeleteAdministrator;
 using IFCE.AutoGate.Application.UseCases.LoadAdministratorById;
 using IFCE.AutoGate.Application.UseCases.LoadAdministrators;
 using IFCE.AutoGate.Core.Contracts;
@@ -41,5 +42,13 @@ public class AdministratorController : BaseController
         var result = await _mediator.SendQuery(new LoadAdministratorByIdQuery(id));
 
         return OkResponse(result);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        await _mediator.SendCommand(new DeleteAdministratorCommand(id));
+
+        return NoContentResponse();
     }
 }

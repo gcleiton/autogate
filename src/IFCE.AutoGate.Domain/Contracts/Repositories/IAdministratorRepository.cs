@@ -10,4 +10,5 @@ public interface IAdministratorRepository : IRepository<Administrator>
     public Task<Administrator> LoadByRecoveryPasswordCode(Guid code);
     public void Add(Administrator administrator);
     public void Update(Administrator administrator);
+    public void Remove(Administrator administrator);
 }
