@@ -5,11 +5,11 @@ namespace IFCE.AutoGate.Core.Contracts;
 public interface IEntity
 {
     public Guid Id { get; }
-    public IReadOnlyCollection<Event> Notifications { get; }
+    public IReadOnlyCollection<Event> Events { get; }
 
-    public void AddNotification(Event notification);
+    public void AddEvent(Event message);
 
-    public void RemoveNotification(Event notification);
+    public void RemoveEvent(Event message);
 
-    public void ClearNotifications();
+    public void ClearEvents();
 }

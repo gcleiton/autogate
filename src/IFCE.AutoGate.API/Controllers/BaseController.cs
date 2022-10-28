@@ -2,7 +2,6 @@ using IFCE.AutoGate.API.Responses;
 using IFCE.AutoGate.Core.Contracts;
 using IFCE.AutoGate.Domain.Errors;
 using Microsoft.AspNetCore.Mvc;
-using IResult = IFCE.AutoGate.Core.Contracts.IResult;
 
 namespace IFCE.AutoGate.API.Controllers;
 
@@ -20,46 +19,22 @@ public abstract class BaseController : Controller
         _notification = notification;
     }
 
-    protected IActionResult OkResponse(string message)
-    {
-        return Ok(new OkResponse(message));
-    }
-
     protected IActionResult OkResponse(object obj)
     {
         return HandleResponse(Ok(obj));
     }
 
-    protected IActionResult HandleResponse(IActionResult actionResult)
+    protected IActionResult CreatedResponse(string uri, string message)
     {
-        if (_notification.HasError())
-        {
-            var error = _notification.Error;
-            switch (error)
-            {
-                case AuthenticationError:
-                    return UnauthorizedResponse(error.Message);
-                case NotFoundError:
-                    return NotFoundResponse(error.Message);
-                case AlreadyExistsError:
-                    return ConflictResponse(error.Message);
-                case ValidationError validationError:
-                    return UnprocessableEntityResponse(validationError.Message, validationError.Errors);
-            }
-        }
-
-        return actionResult;
+        var response = Created(uri, new CreatedResponse(message));
+        return HandleResponse(response);
     }
 
-    protected IActionResult CreatedResponse(IResult result, string uri, string message)
+    protected IActionResult NoContentResponse()
     {
-        return ResponseResult(result, Created(uri, new CreatedResponse(message)));
+        return HandleResponse(NoContent());
     }
 
-    protected IActionResult NoContentResponse(IResult result)
-    {
-        return ResponseResult(result, NoContent());
-    }
 
     protected IActionResult UnauthorizedResponse(string message)
     {
@@ -81,13 +56,15 @@ public abstract class BaseController : Controller
         return Conflict(new ConflictResponse(message));
     }
 
-    private IActionResult ResponseResult(IResult result, IActionResult actionResult)
+    private IActionResult HandleResponse(IActionResult actionResult)
     {
-        if (result.IsFailure)
+        if (_notification.HasError())
         {
-            var error = result.Error;
+            var error = _notification.Error;
             switch (error)
             {
+                case AuthenticationError:
+                    return UnauthorizedResponse(error.Message);
                 case NotFoundError:
                     return NotFoundResponse(error.Message);
                 case AlreadyExistsError:

@@ -1,6 +1,6 @@
 using IFCE.AutoGate.Core.Messages;
 
-namespace IFCE.AutoGate.Application.Events;
+namespace IFCE.AutoGate.Application.Events.AdministradorCreated;
 
 public class AdministratorCreatedEvent : Event
 {

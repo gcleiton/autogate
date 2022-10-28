@@ -5,15 +5,15 @@ namespace IFCE.AutoGate.Core.DomainObjects;
 
 public abstract class Entity : IEntity, ITracking
 {
-    private readonly List<Event> _notifications;
+    private readonly List<Event> _events;
 
     protected Entity()
     {
         Id = Guid.NewGuid();
-        _notifications = new List<Event>();
+        _events = new List<Event>();
     }
 
-    public IReadOnlyCollection<Event> Notifications => _notifications.AsReadOnly();
+    public IReadOnlyCollection<Event> Events => _events.AsReadOnly();
 
     public Guid Id { get; protected set; }
     public DateTime CreatedAt { get; protected set; }
@@ -48,19 +48,19 @@ public abstract class Entity : IEntity, ITracking
 
     #region Notifications
 
-    public void AddNotification(Event notification)
+    public void AddEvent(Event message)
     {
-        _notifications.Add(notification);
+        _events.Add(message);
     }
 
-    public void RemoveNotification(Event notification)
+    public void RemoveEvent(Event message)
     {
-        _notifications.Remove(notification);
+        _events.Remove(message);
     }
 
-    public void ClearNotifications()
+    public void ClearEvents()
     {
-        _notifications.Clear();
+        _events.Clear();
     }
 
     #endregion

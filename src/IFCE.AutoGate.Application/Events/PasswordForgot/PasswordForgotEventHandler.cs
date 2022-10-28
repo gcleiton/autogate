@@ -2,23 +2,23 @@ using IFCE.AutoGate.Domain.Contracts.Gateways;
 using IFCE.AutoGate.Domain.ValueObjects;
 using MediatR;
 
-namespace IFCE.AutoGate.Application.Events.Handlers;
+namespace IFCE.AutoGate.Application.Events.PasswordForgot;
 
-public class AdministratorCreatedEventHandler : INotificationHandler<AdministratorCreatedEvent>
+public class PasswordForgotEventHandler : INotificationHandler<PasswordForgotEvent>
 {
     private readonly IMailSender _mailSender;
 
-    public AdministratorCreatedEventHandler(IMailSender mailSender)
+    public PasswordForgotEventHandler(IMailSender mailSender)
     {
         _mailSender = mailSender;
     }
 
-    public async Task Handle(AdministratorCreatedEvent message, CancellationToken cancellationToken)
+    public async Task Handle(PasswordForgotEvent message, CancellationToken cancellationToken)
     {
         var mail = new MailMessage
         {
             To = message.Email,
-            Subject = "AutoGate | Primeiro Acesso",
+            Subject = "AutoGate | Recuperação de Senha",
             Body = $"Olá {message.Name} seu código de recuperação é {message.RecoveryPasswordCode}"
         };
 

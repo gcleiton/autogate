@@ -7,12 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="MediatR" Version="10.0.1" />
+        <PackageReference Include="MediatR" Version="11.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\IFCE.AutoGate.Core\IFCE.AutoGate.Core.csproj" />
-      <ProjectReference Include="..\IFCE.AutoGate.Domain\IFCE.AutoGate.Domain.csproj" />
+        <ProjectReference Include="..\IFCE.AutoGate.Core\IFCE.AutoGate.Core.csproj"/>
+        <ProjectReference Include="..\IFCE.AutoGate.Domain\IFCE.AutoGate.Domain.csproj"/>
+        <ProjectReference Include="..\IFCE.AutoGate.Infrastructure\IFCE.AutoGate.Infrastructure.csproj"/>
     </ItemGroup>
 
 </Project>

@@ -1,11 +1,11 @@
 using FluentValidation;
-using IFCE.AutoGate.Application.Requests;
+using IFCE.AutoGate.Application.UseCases.Authenticate;
 
 namespace IFCE.AutoGate.Application.Validators;
 
-public class LoginValidator : AbstractValidator<LoginRequest>
+public class AuthenticateValidator : AbstractValidator<AuthenticateCommand>
 {
-    public LoginValidator()
+    public AuthenticateValidator()
     {
         RuleFor(l => l.Email)
             .NotEmpty().WithMessage("O e-mail é obrigatório")

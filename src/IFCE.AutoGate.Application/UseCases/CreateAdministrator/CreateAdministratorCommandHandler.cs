@@ -1,46 +1,53 @@
 using FluentValidation;
-using IFCE.AutoGate.Application.Events;
-using IFCE.AutoGate.Core.Communication;
-using IFCE.AutoGate.Core.Contracts;
+using IFCE.AutoGate.Application.Events.AdministradorCreated;
 using IFCE.AutoGate.Core.Messages;
 using IFCE.AutoGate.Domain.Contracts.Repositories;
 using IFCE.AutoGate.Domain.Entities;
 using IFCE.AutoGate.Domain.Errors;
 using MediatR;
+using INotification = IFCE.AutoGate.Core.Contracts.INotification;
 
-namespace IFCE.AutoGate.Application.Commands.Handlers;
+namespace IFCE.AutoGate.Application.UseCases.CreateAdministrator;
 
 public class CreateAdministratorCommandHandler : CommandHandler<CreateAdministratorCommand>,
-    IRequestHandler<CreateAdministratorCommand, IResult>
+    IRequestHandler<CreateAdministratorCommand, bool>
 {
     private readonly IAdministratorRepository _administratorRepository;
 
-    public CreateAdministratorCommandHandler(IValidator<CreateAdministratorCommand> validator,
-        IAdministratorRepository administratorRepository) : base(validator)
+    public CreateAdministratorCommandHandler(INotification notification,
+        IValidator<CreateAdministratorCommand> validator,
+        IAdministratorRepository administratorRepository) : base(validator, notification)
     {
         _administratorRepository = administratorRepository;
     }
 
-    public async Task<IResult> Handle(CreateAdministratorCommand command, CancellationToken cancellationToken)
+    public async Task<bool> Handle(CreateAdministratorCommand command, CancellationToken cancellationToken)
     {
         var errors = Validate(command);
-        if (errors.Any()) return Result.Failure(new ValidationError(errors));
+        if (errors.Any())
+        {
+            AddError(new ValidationError(errors));
+            return false;
+        }
 
         var exists = await _administratorRepository.CheckByEmail(command.Email);
         if (exists)
-            return Result.Failure(new AlreadyExistsError("O e-mail informado já está em uso por outro administrador"));
+        {
+            AddError(new AlreadyExistsError("O e-mail informado já está em uso por outro administrador"));
+            return false;
+        }
 
         var administrator = new Administrator(command.Name, command.Email);
         administrator.ForgetPassword();
 
         var createdEvent = new AdministratorCreatedEvent(administrator.Name, administrator.Email,
             administrator.RecoveryPasswordCode ?? Guid.Empty);
-        administrator.AddNotification(createdEvent);
+        administrator.AddEvent(createdEvent);
 
         _administratorRepository.Add(administrator);
         await _administratorRepository.UnitOfWork.Commit();
 
         command.AggregateId = administrator.Id;
-        return Result.Ok();
+        return true;
     }
 }

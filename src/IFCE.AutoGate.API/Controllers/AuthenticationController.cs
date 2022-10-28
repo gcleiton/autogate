@@ -1,5 +1,6 @@
-using IFCE.AutoGate.Application.Commands;
-using IFCE.AutoGate.Application.Requests;
+using IFCE.AutoGate.Application.UseCases.Authenticate;
+using IFCE.AutoGate.Application.UseCases.ChangePassword;
+using IFCE.AutoGate.Application.UseCases.RecoverPassword;
 using IFCE.AutoGate.Core.Contracts;
 using IFCE.AutoGate.Domain.Contracts.Gateways;
 using Microsoft.AspNetCore.Mvc;
@@ -18,19 +19,19 @@ public class AuthenticationController : BaseController
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginRequest request)
+    public async Task<IActionResult> Authenticate(AuthenticateCommand command)
     {
-        var accessToken = await _mediator.SendRequest(request);
+        var result = await _mediator.SendCommand(command);
 
-        return OkResponse(accessToken);
+        return OkResponse(result);
     }
 
     [HttpPost("change-password")]
     public async Task<IActionResult> ChangePassword(ChangePasswordCommand command)
     {
-        var result = await _mediator.SendCommand(command);
+        await _mediator.SendCommand(command);
 
-        return NoContentResponse(result);
+        return NoContentResponse();
     }
 
     [HttpPost("recover-password")]

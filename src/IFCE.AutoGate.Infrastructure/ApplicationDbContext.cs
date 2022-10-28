@@ -59,7 +59,7 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
     private async Task PublishEvents()
     {
         var entitiesWithEvents = GetTrackedEntities()
-            .Where(e => e.Entity.Notifications.Any());
+            .Where(e => e.Entity.Events.Any());
 
         var events = GetEventsFromEntities(entitiesWithEvents);
         ClearEventsFromEntities(entitiesWithEvents);
@@ -77,12 +77,12 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
     private IEnumerable<Event> GetEventsFromEntities(IEnumerable<EntityEntry<IEntity>> entities)
     {
         return entities
-            .SelectMany(e => e.Entity.Notifications)
+            .SelectMany(e => e.Entity.Events)
             .ToList();
     }
 
     private void ClearEventsFromEntities(IEnumerable<EntityEntry<IEntity>> entities)
     {
-        entities.ToList().ForEach(e => e.Entity.ClearNotifications());
+        entities.ToList().ForEach(e => e.Entity.ClearEvents());
     }
 }

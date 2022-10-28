@@ -1,5 +1,5 @@
 using FluentValidation;
-using IFCE.AutoGate.Application.Commands;
+using IFCE.AutoGate.Application.UseCases.CreateAdministrator;
 
 namespace IFCE.AutoGate.Application.Validators;
 

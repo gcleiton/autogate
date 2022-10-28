@@ -1,8 +1,8 @@
 using IFCE.AutoGate.Core.Messages;
 
-namespace IFCE.AutoGate.Application.Commands;
+namespace IFCE.AutoGate.Application.UseCases.ChangePassword;
 
-public class ChangePasswordCommand : Command
+public class ChangePasswordCommand : Command<bool>
 {
     public string Password { get; set; }
     public string PasswordConfirmation { get; set; }
