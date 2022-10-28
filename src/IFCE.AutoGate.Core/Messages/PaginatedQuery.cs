@@ -2,7 +2,7 @@ using IFCE.AutoGate.Core.Contracts;
 
 namespace IFCE.AutoGate.Core.Messages;
 
-public abstract class PaginatedQuery<TEntity, TResult> : Query<TEntity, IPaginatedResult<TResult>>
+public abstract class PaginatedQuery<TEntity, TResult> : ListedQuery<TEntity, IPaginatedResult<TResult>>
     where TEntity : IEntity
     where TResult : class
 {
