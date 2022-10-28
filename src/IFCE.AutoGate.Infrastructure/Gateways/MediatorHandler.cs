@@ -1,4 +1,3 @@
-using IFCE.AutoGate.Core.Contracts;
 using IFCE.AutoGate.Core.Messages;
 using IFCE.AutoGate.Domain.Contracts.Gateways;
 using MediatR;
@@ -20,7 +19,7 @@ public class MediatorHandler : IMediatorHandler
         return await _mediator.Send(command);
     }
 
-    public async Task<TResponse> SendQuery<TEntity, TResponse>(Query<TEntity, TResponse> query) where TEntity : IEntity
+    public async Task<TResponse> SendQuery<TResponse>(Query<TResponse> query)
     {
         return await _mediator.Send(query);
     }

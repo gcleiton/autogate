@@ -4,17 +4,15 @@ using IFCE.AutoGate.Core.Contracts;
 using IFCE.AutoGate.Core.Messages;
 using IFCE.AutoGate.Infrastructure;
 using MediatR;
-using INotification = IFCE.AutoGate.Core.Contracts.INotification;
 
 namespace IFCE.AutoGate.Application.UseCases.LoadAdministrators;
 
-public class LoadAdministratorsQueryHandler : QueryHandler<LoadAdministratorsQuery>,
+public class LoadAdministratorsQueryHandler : QueryHandler,
     IRequestHandler<LoadAdministratorsQuery, IPaginatedResult<AdministratorResult>>
 {
     private readonly ApplicationDbContext _dbContext;
 
-    public LoadAdministratorsQueryHandler(INotification notification, ApplicationDbContext dbContext)
-        : base(notification)
+    public LoadAdministratorsQueryHandler(ApplicationDbContext dbContext)
     {
         _dbContext = dbContext;
     }

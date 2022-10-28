@@ -15,6 +15,11 @@ public class AdministratorRepository : Repository<Administrator>, IAdministrator
         return await _context.Administrators.AnyAsync(a => a.Email == email);
     }
 
+    public async Task<Administrator> LoadById(Guid id)
+    {
+        return await _context.Administrators.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
+    }
+
     public async Task<Administrator> LoadByEmail(string email)
     {
         return await _context.Administrators.FirstOrDefaultAsync(a => a.Email == email);
