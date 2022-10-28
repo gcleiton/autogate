@@ -39,4 +39,9 @@ public class AdministratorRepository : Repository<Administrator>, IAdministrator
     {
         _context.Administrators.Update(administrator);
     }
+
+    public void Remove(Administrator administrator)
+    {
+        _context.Administrators.Remove(administrator);
+    }
 }

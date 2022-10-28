@@ -9,6 +9,11 @@ public abstract class CommandHandler<TRequest>
     private readonly INotification _notification;
     private readonly IValidator<TRequest> _validator;
 
+    protected CommandHandler(INotification notification)
+    {
+        _notification = notification;
+    }
+
     protected CommandHandler(IValidator<TRequest> validator, INotification notification)
     {
         _validator = validator;
