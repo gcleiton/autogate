@@ -3,18 +3,21 @@ using IFCE.AutoGate.Core.DomainObjects;
 
 namespace IFCE.AutoGate.Core.Messages;
 
-public abstract class QueryHandler<TResponse> where TResponse : class
+public abstract class QueryHandler
 {
     private readonly INotification _notification;
+
+    protected QueryHandler()
+    {
+    }
 
     protected QueryHandler(INotification notification)
     {
         _notification = notification;
     }
 
-    public TResponse Failure(Error error)
+    public void AddError(Error error)
     {
         _notification.AddError(error);
-        return null;
     }
 }
