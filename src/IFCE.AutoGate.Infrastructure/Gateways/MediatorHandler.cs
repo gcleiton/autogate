@@ -14,12 +14,8 @@ public class MediatorHandler : IMediatorHandler
         _mediator = mediator;
     }
 
-    public async Task<TResponse> SendRequest<TResponse>(Request<TResponse> request)
-    {
-        return await _mediator.Send(request);
-    }
 
-    public async Task<IResult> SendCommand(Command command)
+    public async Task<T> SendCommand<T>(Command<T> command)
     {
         return await _mediator.Send(command);
     }

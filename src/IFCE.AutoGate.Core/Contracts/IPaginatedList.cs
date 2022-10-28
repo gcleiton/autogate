@@ -1,6 +1,6 @@
 namespace IFCE.AutoGate.Core.Contracts;
 
-public interface IPaginatedList<T> : IList<T> where T : IEntity
+public interface IPaginatedList<T> : IList<T> where T : class
 {
     int Page { get; }
     int PageSize { get; }

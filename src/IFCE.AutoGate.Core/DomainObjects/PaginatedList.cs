@@ -3,7 +3,7 @@ using IFCE.AutoGate.Core.Contracts;
 
 namespace IFCE.AutoGate.Core.DomainObjects;
 
-public class PaginatedList<T> : List<T>, IPaginatedList<T> where T : IEntity
+public class PaginatedList<T> : List<T>, IPaginatedList<T> where T : class
 {
     public PaginatedList(IQueryable<T> query, int page, int pageSize)
     {

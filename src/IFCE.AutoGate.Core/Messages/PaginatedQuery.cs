@@ -2,9 +2,9 @@ using IFCE.AutoGate.Core.Contracts;
 
 namespace IFCE.AutoGate.Core.Messages;
 
-public abstract class PaginatedQuery<TEntity, TResponse> : Query<TEntity, TResponse>
+public abstract class PaginatedQuery<TEntity, TResult> : Query<TEntity, IPaginatedResult<TResult>>
     where TEntity : IEntity
-    where TResponse : IPaginationResult<TEntity>
+    where TResult : class
 {
     public static int PageSizeMaximum = 100;
 
@@ -17,4 +17,6 @@ public abstract class PaginatedQuery<TEntity, TResponse> : Query<TEntity, TRespo
         get => _pageSize;
         set => _pageSize = value > PageSizeMaximum ? PageSizeMaximum : value;
     }
+
+    public abstract IPaginatedList<TResult> ToPaginatedList(ref IQueryable<TEntity> query);
 }

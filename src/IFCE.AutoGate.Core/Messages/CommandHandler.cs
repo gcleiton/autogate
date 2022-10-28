@@ -1,19 +1,28 @@
 using FluentValidation;
+using IFCE.AutoGate.Core.Contracts;
+using IFCE.AutoGate.Core.DomainObjects;
 
 namespace IFCE.AutoGate.Core.Messages;
 
-public abstract class CommandHandler<T> where T : Command
+public abstract class CommandHandler<TRequest>
 {
-    protected readonly IValidator<T> _validator;
+    private readonly INotification _notification;
+    private readonly IValidator<TRequest> _validator;
 
-    protected CommandHandler(IValidator<T> validator)
+    protected CommandHandler(IValidator<TRequest> validator, INotification notification)
     {
         _validator = validator;
+        _notification = notification;
     }
 
-    public IEnumerable<string> Validate(T command)
+    protected IEnumerable<string> Validate(TRequest request)
     {
-        var validationResult = _validator.Validate(command);
+        var validationResult = _validator.Validate(request);
         return validationResult.Errors.Select(e => e.ErrorMessage);
+    }
+
+    protected void AddError(Error error)
+    {
+        _notification.AddError(error);
     }
 }

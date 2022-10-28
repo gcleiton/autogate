@@ -1,11 +1,13 @@
+using IFCE.AutoGate.Application.Results;
 using IFCE.AutoGate.Core.Contracts;
+using IFCE.AutoGate.Core.DomainObjects;
 using IFCE.AutoGate.Core.Extensions;
 using IFCE.AutoGate.Core.Messages;
 using IFCE.AutoGate.Domain.Entities;
 
-namespace IFCE.AutoGate.Application.Queries;
+namespace IFCE.AutoGate.Application.UseCases.LoadAdministrators;
 
-public class LoadAdministratorsQuery : PaginatedQuery<Administrator, IPaginationResult<Administrator>>
+public class LoadAdministratorsQuery : PaginatedQuery<Administrator, AdministratorResult>
 {
     public string? Name { get; set; }
     public string? Email { get; set; }
@@ -32,5 +34,17 @@ public class LoadAdministratorsQuery : PaginatedQuery<Administrator, IPagination
                 "Email" => query.OrderByDescending(a => a.Email),
                 _ => query.OrderByDescending(a => a.CreatedAt)
             };
+    }
+
+    public override IPaginatedList<AdministratorResult> ToPaginatedList(ref IQueryable<Administrator> query)
+    {
+        var queryable = query.Select(administrator => new AdministratorResult
+        {
+            Id = administrator.Id,
+            Name = administrator.Name,
+            Email = administrator.Email
+        });
+
+        return new PaginatedList<AdministratorResult>(queryable, Page, PageSize);
     }
 }

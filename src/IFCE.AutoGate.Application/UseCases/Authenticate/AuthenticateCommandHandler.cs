@@ -1,6 +1,4 @@
 using FluentValidation;
-using IFCE.AutoGate.Application.Dtos;
-using IFCE.AutoGate.Application.Requests;
 using IFCE.AutoGate.Core.Messages;
 using IFCE.AutoGate.Domain.Contracts.Gateways;
 using IFCE.AutoGate.Domain.Contracts.Repositories;
@@ -8,17 +6,17 @@ using IFCE.AutoGate.Domain.Errors;
 using MediatR;
 using INotification = IFCE.AutoGate.Core.Contracts.INotification;
 
-namespace IFCE.AutoGate.Application.UseCases;
+namespace IFCE.AutoGate.Application.UseCases.Authenticate;
 
-public class LoginInteractor : Interactor<LoginRequest, AccessTokenDto>,
-    IRequestHandler<LoginRequest, AccessTokenDto>
+public class AuthenticateCommandHandler : CommandHandler<AuthenticateCommand>,
+    IRequestHandler<AuthenticateCommand, AuthenticateCommandResult>
 {
     private readonly IAdministratorRepository _administratorRepository;
     private readonly IHasher _hasher;
     private readonly ITokenHandler _tokenHandler;
 
-    public LoginInteractor(
-        IValidator<LoginRequest> validator,
+    public AuthenticateCommandHandler(
+        IValidator<AuthenticateCommand> validator,
         INotification notification,
         IAdministratorRepository administratorRepository,
         IHasher hasher,
@@ -30,10 +28,15 @@ public class LoginInteractor : Interactor<LoginRequest, AccessTokenDto>,
         _tokenHandler = tokenHandler;
     }
 
-    public async Task<AccessTokenDto> Handle(LoginRequest request, CancellationToken cancellationToken)
+    public async Task<AuthenticateCommandResult> Handle(AuthenticateCommand request,
+        CancellationToken cancellationToken)
     {
         var errors = Validate(request);
-        if (errors.Any()) return Failure(new ValidationError(errors));
+        if (errors.Any())
+        {
+            AddError(new ValidationError(errors));
+            return null;
+        }
 
         var administrator = await _administratorRepository.LoadByEmail(request.Email);
 
@@ -44,13 +47,14 @@ public class LoginInteractor : Interactor<LoginRequest, AccessTokenDto>,
             if (isPasswordMatch)
             {
                 var token = await _tokenHandler.Generate(administrator);
-                return new AccessTokenDto
+                return new AuthenticateCommandResult
                 {
                     AccessToken = token
                 };
             }
         }
 
-        return Failure(new AuthenticationError());
+        AddError(new AuthenticationError());
+        return null;
     }
 }
