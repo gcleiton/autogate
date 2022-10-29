@@ -24,8 +24,8 @@ public class DeleteAdministratorCommandHandler : CommandHandler<DeleteAdministra
         if (administrator == null) return Failure(new NotFoundError("Administrador não encontrado"));
 
         _administratorRepository.Remove(administrator);
-        await _administratorRepository.UnitOfWork.Commit();
+        var isSuccess = await _administratorRepository.UnitOfWork.Commit();
 
-        return true;
+        return isSuccess || Failure(new UnexpectedError());
     }
 }

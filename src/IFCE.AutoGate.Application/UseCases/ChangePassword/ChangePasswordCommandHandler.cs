@@ -34,8 +34,8 @@ public class ChangePasswordCommandHandler : CommandHandler<ChangePasswordCommand
         administrator.ChangePassword(hashedPassword);
 
         _administratorRepository.Update(administrator);
-        await _administratorRepository.UnitOfWork.Commit();
+        var isSuccess = await _administratorRepository.UnitOfWork.Commit();
 
-        return true;
+        return isSuccess || Failure(new UnexpectedError());
     }
 }

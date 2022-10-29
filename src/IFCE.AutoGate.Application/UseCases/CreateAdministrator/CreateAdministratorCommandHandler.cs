@@ -37,9 +37,8 @@ public class CreateAdministratorCommandHandler : CommandHandler<CreateAdministra
         administrator.AddEvent(createdEvent);
 
         _administratorRepository.Add(administrator);
-        await _administratorRepository.UnitOfWork.Commit();
+        var isSuccess = await _administratorRepository.UnitOfWork.Commit();
 
-        command.AggregateId = administrator.Id;
-        return true;
+        return isSuccess || Failure(new UnexpectedError());
     }
 }

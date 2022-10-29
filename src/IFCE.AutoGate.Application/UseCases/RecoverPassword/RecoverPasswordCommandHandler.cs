@@ -34,8 +34,8 @@ public class RecoverPasswordCommandHandler : CommandHandler<RecoverPasswordComma
         administrator.AddEvent(forgotPasswordEvent);
 
         _administratorRepository.Update(administrator);
-        _administratorRepository.UnitOfWork.Commit();
+        var isSuccess = await _administratorRepository.UnitOfWork.Commit();
 
-        return true;
+        return isSuccess || Failure(new UnexpectedError());
     }
 }
