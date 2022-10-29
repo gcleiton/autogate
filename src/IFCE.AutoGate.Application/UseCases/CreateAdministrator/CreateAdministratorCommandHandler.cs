@@ -24,18 +24,10 @@ public class CreateAdministratorCommandHandler : CommandHandler<CreateAdministra
     public async Task<bool> Handle(CreateAdministratorCommand command, CancellationToken cancellationToken)
     {
         var errors = Validate(command);
-        if (errors.Any())
-        {
-            AddError(new ValidationError(errors));
-            return false;
-        }
+        if (errors.Any()) return Failure(new ValidationError(errors));
 
         var exists = await _administratorRepository.CheckByEmail(command.Email);
-        if (exists)
-        {
-            AddError(new AlreadyExistsError("O e-mail informado já está em uso por outro administrador"));
-            return false;
-        }
+        if (exists) return Failure(new AlreadyExistsError("O e-mail informado já está em uso por outro administrador"));
 
         var administrator = new Administrator(command.Name, command.Email);
         administrator.ForgetPassword();
@@ -45,9 +37,8 @@ public class CreateAdministratorCommandHandler : CommandHandler<CreateAdministra
         administrator.AddEvent(createdEvent);
 
         _administratorRepository.Add(administrator);
-        await _administratorRepository.UnitOfWork.Commit();
+        var isSuccess = await _administratorRepository.UnitOfWork.Commit();
 
-        command.AggregateId = administrator.Id;
-        return true;
+        return isSuccess || Failure(new UnexpectedError());
     }
 }

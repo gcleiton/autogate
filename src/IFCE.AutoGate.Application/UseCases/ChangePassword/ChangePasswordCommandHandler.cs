@@ -24,25 +24,18 @@ public class ChangePasswordCommandHandler : CommandHandler<ChangePasswordCommand
     public async Task<bool> Handle(ChangePasswordCommand message, CancellationToken cancellationToken)
     {
         var errors = Validate(message);
-        if (errors.Any())
-        {
-            AddError(new ValidationError(errors));
-            return false;
-        }
+        if (errors.Any()) return Failure(new ValidationError(errors));
 
         var administrator = await _administratorRepository.LoadByRecoveryPasswordCode(message.RecoveryPasswordCode);
         if (administrator is null || !administrator.IsRecoveryPasswordValid())
-        {
-            AddError(new NotFoundError("O código de recuperação da senha está inválido ou expirado"));
-            return false;
-        }
+            return Failure(new NotFoundError("O código de recuperação da senha está inválido ou expirado"));
 
         var hashedPassword = _hasher.Hash(message.Password);
         administrator.ChangePassword(hashedPassword);
 
         _administratorRepository.Update(administrator);
-        await _administratorRepository.UnitOfWork.Commit();
+        var isSuccess = await _administratorRepository.UnitOfWork.Commit();
 
-        return true;
+        return isSuccess || Failure(new UnexpectedError());
     }
 }

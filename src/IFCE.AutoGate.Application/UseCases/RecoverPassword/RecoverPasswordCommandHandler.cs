@@ -22,18 +22,10 @@ public class RecoverPasswordCommandHandler : CommandHandler<RecoverPasswordComma
     public async Task<bool> Handle(RecoverPasswordCommand command, CancellationToken cancellationToken)
     {
         var errors = Validate(command);
-        if (errors.Any())
-        {
-            AddError(new ValidationError(errors));
-            return false;
-        }
+        if (errors.Any()) return Failure(new ValidationError(errors));
 
         var administrator = await _administratorRepository.LoadByEmail(command.Email);
-        if (administrator is null)
-        {
-            AddError(new NotFoundError(""));
-            return false;
-        }
+        if (administrator is null) return Failure(new NotFoundError("Administrador não encontrado."));
 
         administrator.ForgetPassword();
 
@@ -42,8 +34,8 @@ public class RecoverPasswordCommandHandler : CommandHandler<RecoverPasswordComma
         administrator.AddEvent(forgotPasswordEvent);
 
         _administratorRepository.Update(administrator);
-        _administratorRepository.UnitOfWork.Commit();
+        var isSuccess = await _administratorRepository.UnitOfWork.Commit();
 
-        return true;
+        return isSuccess || Failure(new UnexpectedError());
     }
 }

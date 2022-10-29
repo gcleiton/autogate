@@ -1,17 +1,17 @@
 using FluentValidation;
-using IFCE.AutoGate.Application.UseCases.CreateAdministrator;
+using IFCE.AutoGate.Application.UseCases.UpdateAdministrator;
 
 namespace IFCE.AutoGate.Application.Validators;
 
-public class CreateAdministratorValidator : AbstractValidator<CreateAdministratorCommand>
+public class UpdateAdministratorValidator : AbstractValidator<UpdateAdministratorCommand>
 {
-    public CreateAdministratorValidator()
+    public UpdateAdministratorValidator()
     {
         RuleFor(a => a.Name)
             .NotEmpty()
             .WithMessage("O nome do administrador é obrigatório")
-            .MaximumLength(80)
-            .WithMessage("O nome do administrador atingiu o tamanho máximo de 80 caracteres");
+            .MaximumLength(150)
+            .WithMessage("O nome do administrador atingiu o tamanho máximo de 128 caracteres");
 
         RuleFor(a => a.Email)
             .NotEmpty()

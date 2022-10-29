@@ -21,12 +21,13 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
 
     public DbSet<Administrator> Administrators { get; set; }
 
-    public async Task Commit()
+    public async Task<bool> Commit()
     {
         var isSuccess = await SaveChangesAsync() > 0;
         if (isSuccess) PublishEvents();
-    }
 
+        return isSuccess;
+    }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

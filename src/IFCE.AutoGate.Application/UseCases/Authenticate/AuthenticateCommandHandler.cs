@@ -34,7 +34,7 @@ public class AuthenticateCommandHandler : CommandHandler<AuthenticateCommand>,
         var errors = Validate(request);
         if (errors.Any())
         {
-            AddError(new ValidationError(errors));
+            Failure(new ValidationError(errors));
             return null;
         }
 
@@ -54,7 +54,7 @@ public class AuthenticateCommandHandler : CommandHandler<AuthenticateCommand>,
             }
         }
 
-        AddError(new AuthenticationError());
+        Failure(new AuthenticationError());
         return null;
     }
 }

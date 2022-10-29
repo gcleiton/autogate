@@ -2,6 +2,7 @@ using IFCE.AutoGate.Application.UseCases.CreateAdministrator;
 using IFCE.AutoGate.Application.UseCases.DeleteAdministrator;
 using IFCE.AutoGate.Application.UseCases.LoadAdministratorById;
 using IFCE.AutoGate.Application.UseCases.LoadAdministrators;
+using IFCE.AutoGate.Application.UseCases.UpdateAdministrator;
 using IFCE.AutoGate.Core.Contracts;
 using IFCE.AutoGate.Domain.Contracts.Gateways;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +27,16 @@ public class AdministratorController : BaseController
 
         return CreatedResponse("",
             $"Um e-mail foi enviado para o administrador {command.Name} contendo o link para o primeiro acesso no sistema.");
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(Guid id, UpdateAdministratorCommand command)
+    {
+        command.Id = id;
+        await _mediator.SendCommand(command);
+
+        return CreatedResponse("",
+            $"O administrador {command.Name} foi atualizado com sucesso.");
     }
 
     [HttpGet]
