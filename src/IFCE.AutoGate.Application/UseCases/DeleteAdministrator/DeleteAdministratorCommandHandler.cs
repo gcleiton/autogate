@@ -21,11 +21,7 @@ public class DeleteAdministratorCommandHandler : CommandHandler<DeleteAdministra
     {
         var administrator = await _administratorRepository.LoadById(request.Id);
 
-        if (administrator == null)
-        {
-            AddError(new NotFoundError("Administrador não encontrado"));
-            return false;
-        }
+        if (administrator == null) return Failure(new NotFoundError("Administrador não encontrado"));
 
         _administratorRepository.Remove(administrator);
         await _administratorRepository.UnitOfWork.Commit();

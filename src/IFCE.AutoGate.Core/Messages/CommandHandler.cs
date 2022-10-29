@@ -26,8 +26,9 @@ public abstract class CommandHandler<TRequest>
         return validationResult.Errors.Select(e => e.ErrorMessage);
     }
 
-    protected void AddError(Error error)
+    protected bool Failure(Error error)
     {
         _notification.AddError(error);
+        return false;
     }
 }

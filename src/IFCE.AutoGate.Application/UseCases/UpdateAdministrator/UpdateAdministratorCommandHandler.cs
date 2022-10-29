@@ -21,40 +21,23 @@ public class UpdateAdministratorCommandHandler : CommandHandler<UpdateAdministra
     public async Task<bool> Handle(UpdateAdministratorCommand command, CancellationToken cancellationToken)
     {
         var errors = Validate(command);
-        if (errors.Any())
-        {
-            AddError(new ValidationError(errors));
-            return false;
-        }
+        if (errors.Any()) return Failure(new ValidationError(errors));
 
         var administrator = await _administratorRepository.LoadById(command.Id);
 
-        if (administrator == null)
-        {
-            AddError(new NotFoundError("Administrador não encontrado"));
-            return false;
-        }
+        if (administrator == null) return Failure(new NotFoundError("Administrador não encontrado"));
 
         var administratorExists =
             await _administratorRepository.Any(a => a.Email == command.Email && a.Id != command.Id);
 
         if (administratorExists)
-        {
-            AddError(new AlreadyExistsError("O e-mail informado já está em uso por outro administrador"));
-            return false;
-        }
+            return Failure(new AlreadyExistsError("O e-mail informado já está em uso por outro administrador"));
 
         administrator.Rename(command.Name);
         administrator.ChangeEmail(command.Email);
 
         var isSuccess = await _administratorRepository.UnitOfWork.Commit();
 
-        if (!isSuccess)
-        {
-            AddError(new UnexpectedError());
-            return false;
-        }
-
-        return true;
+        return isSuccess || Failure(new UnexpectedError());
     }
 }
