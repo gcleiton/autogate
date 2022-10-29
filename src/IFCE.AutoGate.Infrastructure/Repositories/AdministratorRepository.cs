@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using IFCE.AutoGate.Domain.Contracts.Repositories;
 using IFCE.AutoGate.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,11 @@ public class AdministratorRepository : Repository<Administrator>, IAdministrator
     {
     }
 
+    public async Task<bool> Any(Expression<Func<Administrator, bool>> predicate)
+    {
+        return await _context.Administrators.AnyAsync(predicate);
+    }
+
     public async Task<bool> CheckByEmail(string email)
     {
         return await _context.Administrators.AnyAsync(a => a.Email == email);
@@ -17,7 +23,7 @@ public class AdministratorRepository : Repository<Administrator>, IAdministrator
 
     public async Task<Administrator> LoadById(Guid id)
     {
-        return await _context.Administrators.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
+        return await _context.Administrators.FirstOrDefaultAsync(a => a.Id == id);
     }
 
     public async Task<Administrator> LoadByEmail(string email)
@@ -37,11 +43,17 @@ public class AdministratorRepository : Repository<Administrator>, IAdministrator
 
     public void Update(Administrator administrator)
     {
+        var test = _context.Entry(administrator).State;
         _context.Administrators.Update(administrator);
     }
 
     public void Remove(Administrator administrator)
     {
         _context.Administrators.Remove(administrator);
+    }
+
+    public async Task<bool> CheckById(Guid id)
+    {
+        return await _context.Administrators.AnyAsync(a => a.Id == id);
     }
 }
