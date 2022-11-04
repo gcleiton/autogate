@@ -8,5 +8,6 @@ public static class SettingsConfiguration
     {
         services.Configure<MailSettings>(configuration.GetSection(nameof(MailSettings)));
         services.Configure<JWTSettings>(configuration.GetSection(nameof(JWTSettings)));
+        services.Configure<AwsS3Settings>(configuration.GetSection(nameof(AwsS3Settings)));
     }
 }
