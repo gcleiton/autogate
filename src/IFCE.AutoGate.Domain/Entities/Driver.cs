@@ -4,15 +4,15 @@ namespace IFCE.AutoGate.Domain.Entities;
 
 public class Driver : Entity, IAggregateRoot
 {
-    private readonly List<Vehicle> _vehicles;
+    private readonly IList<Vehicle> _vehicles;
 
     // EF Constructor
     private Driver()
     {
     }
 
-    public Driver(string name, string email, DateTime bornAt, string phone, string license, string tag,
-        List<Vehicle> vehicles)
+    public Driver(string name, string email, DateOnly bornAt, string phone, string license, string tag,
+        IList<Vehicle> vehicles)
     {
         Name = name;
         Email = email;
@@ -24,12 +24,17 @@ public class Driver : Entity, IAggregateRoot
     }
 
     public string Name { get; }
-    public string PhotoUrl { get; }
+    public string Photo { get; private set; }
     public string Email { get; }
-    public DateTime BornAt { get; }
+    public DateOnly BornAt { get; }
     public string Phone { get; }
     public string License { get; }
     public string Tag { get; }
 
-    public IReadOnlyCollection<Vehicle> Vehicles => _vehicles;
+    public IReadOnlyCollection<Vehicle> Vehicles => _vehicles.ToList();
+
+    public void ChangePhoto(string photo)
+    {
+        Photo = photo;
+    }
 }
