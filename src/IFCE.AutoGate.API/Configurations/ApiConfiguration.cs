@@ -7,6 +7,7 @@ public static class ApiConfiguration
     public static void AddApiConfiguration(this IServiceCollection services)
     {
         services.AddControllers();
+        services.AddDateOnlyTimeOnlyStringConverters();
         services.AddEndpointsApiExplorer();
         services.AddCors(o =>
         {
