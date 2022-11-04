@@ -3,6 +3,7 @@ using IFCE.AutoGate.Core.Contracts;
 using IFCE.AutoGate.Core.Messages;
 using IFCE.AutoGate.Domain.Contracts.Gateways;
 using IFCE.AutoGate.Domain.Entities;
+using IFCE.AutoGate.Domain.ValueObjects;
 using IFCE.AutoGate.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -20,6 +21,9 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
     }
 
     public DbSet<Administrator> Administrators { get; set; }
+    public DbSet<Driver> Drivers { get; set; }
+    public DbSet<Vehicle> Vehicles { get; set; }
+    public DbSet<VehicleCategory> VehicleCategories { get; set; }
 
     public async Task<bool> Commit()
     {
