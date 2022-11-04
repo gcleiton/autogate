@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IFCE.AutoGate.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221101003259_AddDriversTable")]
+    [Migration("20221104225952_AddDriversTable")]
     partial class AddDriversTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -81,8 +81,8 @@ namespace IFCE.AutoGate.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("BornAt")
-                        .HasColumnType("TIMESTAMP");
+                    b.Property<DateOnly>("BornAt")
+                        .HasColumnType("DATE");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -99,8 +99,8 @@ namespace IFCE.AutoGate.Infrastructure.Migrations
 
                     b.Property<string>("License")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
+                        .HasMaxLength(11)
+                        .HasColumnType("character varying(11)");
 
                     b.Property<DateTime>("ModifiedAt")
                         .ValueGeneratedOnAdd()
@@ -120,7 +120,7 @@ namespace IFCE.AutoGate.Infrastructure.Migrations
                         .HasMaxLength(11)
                         .HasColumnType("character varying(11)");
 
-                    b.Property<string>("PhotoUrl")
+                    b.Property<string>("Photo")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
@@ -133,7 +133,7 @@ namespace IFCE.AutoGate.Infrastructure.Migrations
                     b.HasIndex("Email", "Tag")
                         .IsUnique();
 
-                    b.ToTable("drivers", (string)null);
+                    b.ToTable("Drivers", (string)null);
                 });
 
             modelBuilder.Entity("IFCE.AutoGate.Domain.Entities.Vehicle", b =>
@@ -183,7 +183,7 @@ namespace IFCE.AutoGate.Infrastructure.Migrations
                     b.HasIndex("Plate")
                         .IsUnique();
 
-                    b.ToTable("vehicles", (string)null);
+                    b.ToTable("Vehicles", (string)null);
                 });
 
             modelBuilder.Entity("IFCE.AutoGate.Domain.Entities.VehicleCategory", b =>
@@ -199,7 +199,7 @@ namespace IFCE.AutoGate.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("vehicle_categories", (string)null);
+                    b.ToTable("VehicleCategories", (string)null);
                 });
 
             modelBuilder.Entity("IFCE.AutoGate.Domain.Entities.Vehicle", b =>

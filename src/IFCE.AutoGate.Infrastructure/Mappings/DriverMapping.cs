@@ -8,7 +8,7 @@ public class DriverMapping : IEntityTypeConfiguration<Driver>
 {
     public void Configure(EntityTypeBuilder<Driver> builder)
     {
-        builder.ToTable("drivers");
+        builder.ToTable("Drivers");
 
         builder.HasKey(d => d.Id);
 
@@ -18,7 +18,7 @@ public class DriverMapping : IEntityTypeConfiguration<Driver>
             .IsRequired();
 
         builder
-            .Property(a => a.PhotoUrl)
+            .Property(a => a.Photo)
             .HasMaxLength(256)
             .IsRequired(false);
 
@@ -34,7 +34,7 @@ public class DriverMapping : IEntityTypeConfiguration<Driver>
 
         builder
             .Property(d => d.License)
-            .HasMaxLength(10)
+            .HasMaxLength(11)
             .IsRequired();
 
         builder
@@ -43,7 +43,7 @@ public class DriverMapping : IEntityTypeConfiguration<Driver>
 
         builder
             .Property(d => d.BornAt)
-            .HasColumnType("TIMESTAMP")
+            .HasColumnType("DATE")
             .IsRequired();
 
         builder

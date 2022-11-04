@@ -10,16 +10,16 @@ namespace IFCE.AutoGate.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "drivers",
+                name: "Drivers",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "character varying(80)", maxLength: 80, nullable: false),
-                    PhotoUrl = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    Photo = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(80)", maxLength: 80, nullable: false),
-                    BornAt = table.Column<DateTime>(type: "TIMESTAMP", nullable: false),
+                    BornAt = table.Column<DateOnly>(type: "DATE", nullable: false),
                     Phone = table.Column<string>(type: "character varying(11)", maxLength: 11, nullable: false),
-                    License = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
+                    License = table.Column<string>(type: "character varying(11)", maxLength: 11, nullable: false),
                     Tag = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TIMESTAMP", nullable: false, defaultValueSql: "NOW()"),
                     CreatedBy = table.Column<int>(type: "integer", nullable: true),
@@ -28,11 +28,11 @@ namespace IFCE.AutoGate.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_drivers", x => x.Id);
+                    table.PrimaryKey("PK_Drivers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "vehicle_categories",
+                name: "VehicleCategories",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -40,11 +40,11 @@ namespace IFCE.AutoGate.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_vehicle_categories", x => x.Id);
+                    table.PrimaryKey("PK_VehicleCategories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "vehicles",
+                name: "Vehicles",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -59,38 +59,38 @@ namespace IFCE.AutoGate.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_vehicles", x => x.Id);
+                    table.PrimaryKey("PK_Vehicles", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_vehicles_drivers_DriverId",
+                        name: "FK_Vehicles_Drivers_DriverId",
                         column: x => x.DriverId,
-                        principalTable: "drivers",
+                        principalTable: "Drivers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_vehicles_vehicle_categories_CategoryId",
+                        name: "FK_Vehicles_VehicleCategories_CategoryId",
                         column: x => x.CategoryId,
-                        principalTable: "vehicle_categories",
+                        principalTable: "VehicleCategories",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_drivers_Email_Tag",
-                table: "drivers",
+                name: "IX_Drivers_Email_Tag",
+                table: "Drivers",
                 columns: new[] { "Email", "Tag" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_vehicles_CategoryId",
-                table: "vehicles",
+                name: "IX_Vehicles_CategoryId",
+                table: "Vehicles",
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_vehicles_DriverId",
-                table: "vehicles",
+                name: "IX_Vehicles_DriverId",
+                table: "Vehicles",
                 column: "DriverId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_vehicles_Plate",
-                table: "vehicles",
+                name: "IX_Vehicles_Plate",
+                table: "Vehicles",
                 column: "Plate",
                 unique: true);
         }
@@ -98,13 +98,13 @@ namespace IFCE.AutoGate.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "vehicles");
+                name: "Vehicles");
 
             migrationBuilder.DropTable(
-                name: "drivers");
+                name: "Drivers");
 
             migrationBuilder.DropTable(
-                name: "vehicle_categories");
+                name: "VehicleCategories");
         }
     }
 }
