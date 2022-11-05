@@ -1,5 +1,6 @@
 using IFCE.AutoGate.Application.UseCases.CreateDriver;
 using IFCE.AutoGate.Application.UseCases.DeleteDriver;
+using IFCE.AutoGate.Application.UseCases.ReactivateDriver;
 using IFCE.AutoGate.Core.Contracts;
 using IFCE.AutoGate.Domain.Contracts.Gateways;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +31,14 @@ public class DriverController : BaseController
     public async Task<IActionResult> Delete(Guid id)
     {
         await _mediator.SendCommand(new DeleteDriverCommand(id));
+
+        return NoContentResponse();
+    }
+
+    [HttpPatch("{id}/reactivate")]
+    public async Task<IActionResult> Reactivate(Guid id)
+    {
+        await _mediator.SendCommand(new ReactivateDriverCommand(id));
 
         return NoContentResponse();
     }
