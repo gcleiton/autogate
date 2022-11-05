@@ -6,6 +6,7 @@ namespace IFCE.AutoGate.Domain.Entities;
 public class Driver : Entity, ISoftDelete, IAggregateRoot
 {
     private readonly IList<Vehicle> _vehicles;
+    private ISoftDelete _softDeleteImplementation;
 
     // EF Constructor
     private Driver()
@@ -39,6 +40,11 @@ public class Driver : Entity, ISoftDelete, IAggregateRoot
     public void Disable()
     {
         DisabledAt = DateTime.Now;
+    }
+
+    public void Enable()
+    {
+        DisabledAt = null;
     }
 
     public void ChangePhoto(string photo)
