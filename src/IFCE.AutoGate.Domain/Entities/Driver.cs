@@ -1,8 +1,9 @@
+using IFCE.AutoGate.Core.Contracts;
 using IFCE.AutoGate.Core.DomainObjects;
 
 namespace IFCE.AutoGate.Domain.Entities;
 
-public class Driver : Entity, IAggregateRoot
+public class Driver : Entity, ISoftDelete, IAggregateRoot
 {
     private readonly IList<Vehicle> _vehicles;
 
@@ -32,6 +33,13 @@ public class Driver : Entity, IAggregateRoot
     public string Tag { get; }
 
     public IReadOnlyCollection<Vehicle> Vehicles => _vehicles.ToList();
+
+    public DateTime? DisabledAt { get; private set; }
+
+    public void Disable()
+    {
+        DisabledAt = DateTime.Now;
+    }
 
     public void ChangePhoto(string photo)
     {
