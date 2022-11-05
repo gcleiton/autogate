@@ -1,4 +1,5 @@
 using IFCE.AutoGate.Application.UseCases.CreateDriver;
+using IFCE.AutoGate.Application.UseCases.DeleteDriver;
 using IFCE.AutoGate.Core.Contracts;
 using IFCE.AutoGate.Domain.Contracts.Gateways;
 using Microsoft.AspNetCore.Mvc;
@@ -23,5 +24,13 @@ public class DriverController : BaseController
 
         return CreatedResponse("",
             $"Um e-mail foi enviado para o administrador {command.Name} contendo o link para o primeiro acesso no sistema.");
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        await _mediator.SendCommand(new DeleteDriverCommand(id));
+
+        return NoContentResponse();
     }
 }
