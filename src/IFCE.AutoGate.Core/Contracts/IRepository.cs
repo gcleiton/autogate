@@ -8,4 +8,5 @@ public interface IRepository<T> : IDisposable where T : IAggregateRoot
 {
     IUnitOfWork UnitOfWork { get; }
     Task<bool> CheckBy(Expression<Func<T, bool>> predicate);
+    Task<T?> LoadBy(Expression<Func<T, bool>> predicate);
 }
