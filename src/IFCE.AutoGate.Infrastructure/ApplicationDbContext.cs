@@ -1,9 +1,9 @@
+using System.Diagnostics;
 using System.Reflection;
 using IFCE.AutoGate.Core.Contracts;
 using IFCE.AutoGate.Core.Messages;
 using IFCE.AutoGate.Domain.Contracts.Gateways;
 using IFCE.AutoGate.Domain.Entities;
-using IFCE.AutoGate.Domain.ValueObjects;
 using IFCE.AutoGate.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -18,6 +18,7 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
         base(options)
     {
         _mediatorHandler = mediatorHandler;
+        Debugger.Launch();
     }
 
     public DbSet<Administrator> Administrators { get; set; }
@@ -39,6 +40,8 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         builder.ApplyForeignKeysBehavior();
         builder.ApplyTrackingBehavior();
+        builder.ApplySoftDeleteBehavior();
+        builder.ApplyGlobalFilters<ISoftDelete>(e => e.DisabledAt == null);
 
         base.OnModelCreating(builder);
     }
