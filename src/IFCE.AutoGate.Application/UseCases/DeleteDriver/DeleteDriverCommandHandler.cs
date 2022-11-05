@@ -19,7 +19,7 @@ public class DeleteDriverCommandHandler : CommandHandler<DeleteDriverCommand>,
 
     public async Task<bool> Handle(DeleteDriverCommand command, CancellationToken cancellationToken)
     {
-        var driver = await _driverRepository.LoadBy(d => d.Id == command.Id);
+        var driver = await _driverRepository.LoadBy(d => d.Id == command.Id && d.DisabledAt == null);
         if (driver is null) return Failure(new NotFoundError("Motorista não encontrado"));
 
         driver.Disable();
