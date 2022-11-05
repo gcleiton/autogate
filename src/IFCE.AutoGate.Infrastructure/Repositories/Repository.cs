@@ -28,4 +28,9 @@ public abstract class Repository<T> : IRepository<T> where T : EntityBase, IAggr
     {
         return await _dbSet.AnyAsync(predicate);
     }
+
+    public async Task<T?> LoadBy(Expression<Func<T, bool>> predicate)
+    {
+        return await _dbSet.FirstOrDefaultAsync(predicate);
+    }
 }
