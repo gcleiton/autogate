@@ -41,7 +41,6 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
         builder.ApplyForeignKeysBehavior();
         builder.ApplyTrackingBehavior();
         builder.ApplySoftDeleteBehavior();
-        builder.ApplyGlobalFilters<ISoftDelete>(e => e.DisabledAt == null);
 
         base.OnModelCreating(builder);
     }
