@@ -9,7 +9,7 @@ public class Vehicle : Entity
     {
     }
 
-    public Vehicle(string plate, string model, Guid categoryId)
+    public Vehicle(string plate, string model, Guid categoryId, Guid id = default) : base(id)
     {
         Plate = plate;
         Model = model;

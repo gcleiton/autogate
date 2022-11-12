@@ -1,30 +1,26 @@
 using FluentValidation;
 using IFCE.AutoGate.Core.DomainObjects;
 using IFCE.AutoGate.Core.Messages;
-using IFCE.AutoGate.Domain.Contracts.Gateways;
 using IFCE.AutoGate.Domain.Contracts.Repositories;
 using IFCE.AutoGate.Domain.Entities;
 using IFCE.AutoGate.Domain.Errors;
 using MediatR;
 using INotification = IFCE.AutoGate.Core.Contracts.INotification;
 
-namespace IFCE.AutoGate.Application.UseCases.CreateDriver;
+namespace IFCE.AutoGate.Application.UseCases.UpdateDriver;
 
-public class CreateDriverCommandHandler : CommandHandler<CreateDriverCommand>,
-    IRequestHandler<CreateDriverCommand, bool>
+public class UpdateDriverCommandHandler : CommandHandler<UpdateDriverCommand>,
+    IRequestHandler<UpdateDriverCommand, bool>
 {
     private readonly IDriverRepository _driverRepository;
-    private readonly IFileStorage _fileStorage;
 
-    public CreateDriverCommandHandler(IValidator<CreateDriverCommand> validator, INotification notification,
-        IDriverRepository driverRepository, IFileStorage fileStorage) : base(
-        validator, notification)
+    public UpdateDriverCommandHandler(IValidator<UpdateDriverCommand> validator, INotification notification,
+        IDriverRepository driverRepository) : base(validator, notification)
     {
         _driverRepository = driverRepository;
-        _fileStorage = fileStorage;
     }
 
-    public async Task<bool> Handle(CreateDriverCommand command, CancellationToken cancellationToken)
+    public async Task<bool> Handle(UpdateDriverCommand command, CancellationToken cancellationToken)
     {
         var errors = Validate(command);
         if (errors.Any()) return Failure(new ValidationError(errors));
@@ -33,46 +29,43 @@ public class CreateDriverCommandHandler : CommandHandler<CreateDriverCommand>,
         if (error is not null) return Failure(error);
 
         var driver = MapDriver(command);
-
-        if (command.Photo is not null && command.Photo.Length > 0)
-        {
-            var fileKey = await _fileStorage.Upload(command.Photo);
-            driver.ChangePhoto(fileKey);
-        }
-
-        _driverRepository.Add(driver);
+        _driverRepository.Update(driver);
         var isSuccess = await _driverRepository.UnitOfWork.Commit();
 
         return isSuccess || Failure(new UnexpectedError());
     }
 
-    private async Task<Error> CanHandle(CreateDriverCommand command)
+    private async Task<Error> CanHandle(UpdateDriverCommand command)
     {
-        var emailAlreadyExists = await _driverRepository.CheckBy(d => d.Email == command.Email);
+        var driverExists = await _driverRepository.CheckBy(d => d.Id == command.Id);
+        if (!driverExists) return new NotFoundError("Motorista não foi encontrado");
+
+        var emailAlreadyExists = await _driverRepository.CheckBy(d => d.Email == command.Email && d.Id != command.Id);
         if (emailAlreadyExists)
             return new AlreadyExistsError("O e-mail informado já está em uso por outro motorista.");
 
-        var tagAlreadyExists = await _driverRepository.CheckBy(d => d.Tag == command.CardNumber);
+        var tagAlreadyExists = await _driverRepository.CheckBy(d => d.Tag == command.CardNumber && d.Id != command.Id);
         if (tagAlreadyExists)
             return new AlreadyExistsError("O número do cartão já está em uso por outro motorista.");
 
-        var licenseAlreadyExists = await _driverRepository.CheckBy(d => d.License == command.License);
+        var licenseAlreadyExists =
+            await _driverRepository.CheckBy(d => d.License == command.License && d.Id != command.Id);
         if (licenseAlreadyExists)
             return new AlreadyExistsError("A licença já está em uso por outro motorista.");
 
         var plates = command.Vehicles.Select(v => v.Plate);
-        var anyPlateAlreadyExists = await _driverRepository.CheckByVehiclePlates(plates);
+        var anyPlateAlreadyExists = await _driverRepository.CheckByVehiclePlates(plates, command.Id);
         if (anyPlateAlreadyExists)
             return new AlreadyExistsError("Um ou mais veículos já está em uso por outro motorista.");
 
         return null;
     }
 
-    private Driver MapDriver(CreateDriverCommand command)
+    private Driver MapDriver(UpdateDriverCommand command)
     {
-        var vehicles = command.Vehicles.Select(dto => new Vehicle(dto.Plate, dto.Model, dto.CategoryId));
+        var vehicles = command.Vehicles.Select(dto => new Vehicle(dto.Plate, dto.Model, dto.CategoryId, dto.Id));
         var driver = new Driver(command.Name, command.Email, command.BirthDate, command.Phone, command.License,
-            command.CardNumber, vehicles);
+            command.CardNumber, vehicles, command.Id);
 
         return driver;
     }

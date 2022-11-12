@@ -1,6 +1,7 @@
 using IFCE.AutoGate.Application.UseCases.CreateDriver;
 using IFCE.AutoGate.Application.UseCases.DeleteDriver;
 using IFCE.AutoGate.Application.UseCases.ReactivateDriver;
+using IFCE.AutoGate.Application.UseCases.UpdateDriver;
 using IFCE.AutoGate.Core.Contracts;
 using IFCE.AutoGate.Domain.Contracts.Gateways;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,16 @@ public class DriverController : BaseController
     [HttpPost]
     public async Task<IActionResult> Create([FromForm] CreateDriverCommand command)
     {
+        await _mediator.SendCommand(command);
+
+        return CreatedResponse("",
+            $"Um e-mail foi enviado para o administrador {command.Name} contendo o link para o primeiro acesso no sistema.");
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(Guid id, [FromForm] UpdateDriverCommand command)
+    {
+        command.Id = id;
         await _mediator.SendCommand(command);
 
         return CreatedResponse("",

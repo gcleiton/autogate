@@ -4,6 +4,10 @@ namespace IFCE.AutoGate.Core.DomainObjects;
 
 public abstract class Entity : EntityBase, ITracking
 {
+    protected Entity(Guid id = default) : base(id)
+    {
+    }
+
     public DateTime CreatedAt { get; protected set; }
     public int? CreatedBy { get; protected set; }
     public DateTime ModifiedAt { get; protected set; }
