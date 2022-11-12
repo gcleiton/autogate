@@ -51,12 +51,12 @@ public class LoadDriversQuery : PaginatedQuery<Driver, DriverDto>
             BirthDate = d.BornAt.ToString(),
             License = d.License,
             Phone = d.Phone,
-            CardNumber = d.Tag,
             Vehicles = d.Vehicles.Select(v => new VehicleDto
             {
                 Id = v.Id,
                 Model = v.Model,
                 Plate = v.Plate,
+                CardNumber = v.Tag,
                 Category = new CategoryDto
                 {
                     Id = v.Category.Id,

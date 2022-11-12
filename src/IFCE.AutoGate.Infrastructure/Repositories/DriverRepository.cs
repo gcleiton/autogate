@@ -46,6 +46,11 @@ public class DriverRepository : Repository<Driver>, IDriverRepository
         return _context.Vehicles.AnyAsync(v => plates.Contains(v.Plate));
     }
 
+    public Task<bool> CheckByVehicleTags(IEnumerable<string> tags)
+    {
+        return _context.Vehicles.AnyAsync(v => tags.Contains(v.Tag));
+    }
+
     public Task<bool> CheckByVehiclePlates(IEnumerable<string> plates, Guid exceptDriverId)
     {
         return _context.Vehicles.AnyAsync(v => v.DriverId != exceptDriverId && plates.Contains(v.Plate));

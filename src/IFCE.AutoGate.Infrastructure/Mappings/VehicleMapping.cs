@@ -23,6 +23,10 @@ public class VehicleMapping : IEntityTypeConfiguration<Vehicle>
             .IsRequired();
 
         builder
+            .Property(d => d.Tag)
+            .IsRequired();
+
+        builder
             .Property(v => v.CategoryId)
             .IsRequired();
         builder
@@ -41,6 +45,6 @@ public class VehicleMapping : IEntityTypeConfiguration<Vehicle>
             .HasForeignKey(v => v.DriverId)
             .HasPrincipalKey(d => d.Id);
 
-        builder.HasIndex(v => v.Plate).IsUnique();
+        builder.HasIndex(v => new { v.Plate, v.Tag }).IsUnique();
     }
 }

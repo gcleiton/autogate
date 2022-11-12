@@ -38,10 +38,6 @@ public class DriverMapping : IEntityTypeConfiguration<Driver>
             .IsRequired();
 
         builder
-            .Property(d => d.Tag)
-            .IsRequired();
-
-        builder
             .Property(d => d.BornAt)
             .HasColumnType("DATE")
             .IsRequired();
@@ -53,7 +49,7 @@ public class DriverMapping : IEntityTypeConfiguration<Driver>
             .HasPrincipalKey(d => d.Id);
 
         builder
-            .HasIndex(d => new { d.Email, d.Tag })
+            .HasIndex(d => d.Email)
             .IsUnique();
     }
 }

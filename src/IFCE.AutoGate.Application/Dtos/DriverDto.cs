@@ -10,7 +10,6 @@ public class DriverDto
     public string BirthDate { get; set; }
     public string Phone { get; set; }
     public string License { get; set; }
-    public string CardNumber { get; set; }
     public IEnumerable<VehicleDto> Vehicles { get; set; }
 
     public static DriverDto FromEntity(Driver driver)
@@ -23,12 +22,12 @@ public class DriverDto
             BirthDate = driver.BornAt.ToString(),
             License = driver.License,
             Phone = driver.Phone,
-            CardNumber = driver.Tag,
             Vehicles = driver.Vehicles.Select(v => new VehicleDto
             {
                 Id = v.Id,
                 Model = v.Model,
                 Plate = v.Plate,
+                CardNumber = v.Tag,
                 Category = new CategoryDto
                 {
                     Id = v.Category.Id,
@@ -44,6 +43,7 @@ public class VehicleDto
     public Guid Id { get; set; }
     public string Plate { get; set; }
     public string Model { get; set; }
+    public string CardNumber { get; set; }
     public CategoryDto Category { get; set; }
 }
 

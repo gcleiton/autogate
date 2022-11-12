@@ -9,6 +9,7 @@ public interface IDriverRepository : IRepository<Driver>
     void Update(Driver driver);
 
     Task<bool> CheckByVehiclePlates(IEnumerable<string> plates);
+    Task<bool> CheckByVehicleTags(IEnumerable<string> tags);
 
     Task<bool> CheckByVehiclePlates(IEnumerable<string> plates, Guid exceptDriverId);
 }
