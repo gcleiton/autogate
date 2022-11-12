@@ -13,10 +13,33 @@ public class DriverRepository : Repository<Driver>, IDriverRepository
     public void Add(Driver driver)
     {
         _context.Drivers.Add(driver);
+        _context.Vehicles.AttachRange(driver.Vehicles);
+    }
+
+    public void Update(Driver driver)
+    {
+        var existingDriver = _context.Drivers
+            .AsNoTracking()
+            .Where(d => d.Id == driver.Id).Include(d => d.Vehicles)
+            .First();
+
+        _context.Entry(existingDriver).CurrentValues.SetValues(driver);
+
+        foreach (var vehicle in driver.Vehicles)
+            _context.Entry(vehicle).State = existingDriver.Vehicles.Any(v => v.Id == vehicle.Id)
+                ? EntityState.Modified
+                : EntityState.Added;
+
+        _context.Drivers.Update(driver);
     }
 
     public Task<bool> CheckByVehiclePlates(IEnumerable<string> plates)
     {
         return _context.Vehicles.AnyAsync(v => plates.Contains(v.Plate));
+    }
+
+    public Task<bool> CheckByVehiclePlates(IEnumerable<string> plates, Guid exceptDriverId)
+    {
+        return _context.Vehicles.AnyAsync(v => v.DriverId != exceptDriverId && plates.Contains(v.Plate));
     }
 }
