@@ -5,8 +5,11 @@ namespace IFCE.AutoGate.Domain.Contracts.Repositories;
 public interface IDriverRepository : IRepository<Driver>
 {
     Task<Driver> LoadById(Guid id);
+    Task<Vehicle> LoadVehicleByTag(string tag);
     void Add(Driver driver);
     void Update(Driver driver);
+
+    void AddTransit(Transit transit);
 
     Task<bool> CheckByVehiclePlates(IEnumerable<string> plates);
     Task<bool> CheckByVehicleTags(IEnumerable<string> tags);
