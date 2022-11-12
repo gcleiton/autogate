@@ -1,3 +1,5 @@
+using IFCE.AutoGate.Domain.Entities;
+
 namespace IFCE.AutoGate.Application.Dtos;
 
 public class DriverDto
@@ -10,6 +12,31 @@ public class DriverDto
     public string License { get; set; }
     public string CardNumber { get; set; }
     public IEnumerable<VehicleDto> Vehicles { get; set; }
+
+    public static DriverDto FromEntity(Driver driver)
+    {
+        return new DriverDto
+        {
+            Id = driver.Id,
+            Name = driver.Name,
+            Email = driver.Email,
+            BirthDate = driver.BornAt.ToString(),
+            License = driver.License,
+            Phone = driver.Phone,
+            CardNumber = driver.Tag,
+            Vehicles = driver.Vehicles.Select(v => new VehicleDto
+            {
+                Id = v.Id,
+                Model = v.Model,
+                Plate = v.Plate,
+                Category = new CategoryDto
+                {
+                    Id = v.Category.Id,
+                    Name = v.Category.Name
+                }
+            })
+        };
+    }
 }
 
 public class VehicleDto
