@@ -4,6 +4,8 @@ namespace IFCE.AutoGate.Domain.Entities;
 
 public class Vehicle : Entity
 {
+    private readonly IList<Transit> _transits = new List<Transit>();
+
     // EF Constructor
     private Vehicle()
     {
@@ -17,13 +19,16 @@ public class Vehicle : Entity
         CategoryId = categoryId;
     }
 
+
     public string Plate { get; }
     public string Model { get; }
     public string Tag { get; }
     public Guid CategoryId { get; }
-    public Guid DriverId { get; }
+    public Guid DriverId { get; private set; }
 
-    public VehicleCategory Category { get; }
+    public VehicleCategory Category { get; private set; }
 
-    public Driver Driver { get; set; }
+    public Driver Driver { get; private set; }
+
+    public IReadOnlyCollection<Transit> Transits => _transits.ToList();
 }

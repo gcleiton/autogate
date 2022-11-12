@@ -45,6 +45,12 @@ public class VehicleMapping : IEntityTypeConfiguration<Vehicle>
             .HasForeignKey(v => v.DriverId)
             .HasPrincipalKey(d => d.Id);
 
+        builder
+            .HasMany(d => d.Transits)
+            .WithOne(t => t.Vehicle)
+            .HasForeignKey(v => v.VehicleId)
+            .HasPrincipalKey(t => t.Id);
+
         builder.HasIndex(v => new { v.Plate, v.Tag }).IsUnique();
     }
 }

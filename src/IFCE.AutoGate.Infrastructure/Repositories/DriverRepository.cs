@@ -41,6 +41,11 @@ public class DriverRepository : Repository<Driver>, IDriverRepository
         _context.Drivers.Update(driver);
     }
 
+    public void AddTransit(Transit transit)
+    {
+        _context.Transits.Add(transit);
+    }
+
     public Task<bool> CheckByVehiclePlates(IEnumerable<string> plates)
     {
         return _context.Vehicles.AnyAsync(v => plates.Contains(v.Plate));
@@ -54,5 +59,10 @@ public class DriverRepository : Repository<Driver>, IDriverRepository
     public Task<bool> CheckByVehiclePlates(IEnumerable<string> plates, Guid exceptDriverId)
     {
         return _context.Vehicles.AnyAsync(v => v.DriverId != exceptDriverId && plates.Contains(v.Plate));
+    }
+
+    public Task<Vehicle> LoadVehicleByTag(string tag)
+    {
+        return _context.Vehicles.FirstOrDefaultAsync(v => v.Tag == tag);
     }
 }

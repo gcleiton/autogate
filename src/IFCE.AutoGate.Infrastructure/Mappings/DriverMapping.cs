@@ -49,6 +49,12 @@ public class DriverMapping : IEntityTypeConfiguration<Driver>
             .HasPrincipalKey(d => d.Id);
 
         builder
+            .HasMany(d => d.Transits)
+            .WithOne(t => t.Driver)
+            .HasForeignKey(v => v.DriverId)
+            .HasPrincipalKey(t => t.Id);
+
+        builder
             .HasIndex(d => d.Email)
             .IsUnique();
     }
