@@ -49,7 +49,7 @@ public static class ModelBuilderExtension
     {
         var foreignKeys = builder.GetEntities<IEntity>().SelectMany(e => e.GetForeignKeys());
 
-        foreach (var foreignKey in foreignKeys) foreignKey.DeleteBehavior = DeleteBehavior.ClientSetNull;
+        foreach (var foreignKey in foreignKeys) foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
     }
 
     public static void ApplyGlobalFilters<T>(this ModelBuilder builder, Expression<Func<T, bool>> expression)

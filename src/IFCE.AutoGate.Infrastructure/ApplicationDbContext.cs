@@ -22,8 +22,8 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
     }
 
     public DbSet<Administrator> Administrators { get; set; }
-    public DbSet<Driver> Drivers { get; set; }
-    public DbSet<Vehicle> Vehicles { get; set; }
+    public virtual DbSet<Driver> Drivers { get; set; }
+    public virtual DbSet<Vehicle> Vehicles { get; set; }
     public DbSet<VehicleCategory> VehicleCategories { get; set; }
 
     public async Task<bool> Commit()
@@ -53,19 +53,19 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
 
     private void ApplyTracking()
     {
-        var entityEntries = GetTrackedEntities()
+        var entityEntries = GetTrackedEntities<ITracking>()
             .Where(e => e.State is EntityState.Added or EntityState.Modified);
 
         foreach (var entityEntry in entityEntries)
             if (entityEntry.State == EntityState.Added)
-                ((ITracking)entityEntry.Entity).AddCreator(null);
+                entityEntry.Entity.AddCreator(null);
             else
-                ((ITracking)entityEntry.Entity).ChangeModifier(null);
+                entityEntry.Entity.ChangeModifier(null);
     }
 
     private async Task PublishEvents()
     {
-        var entitiesWithEvents = GetTrackedEntities()
+        var entitiesWithEvents = GetTrackedEntities<IEntity>()
             .Where(e => e.Entity.Events.Any());
 
         var events = GetEventsFromEntities(entitiesWithEvents);
@@ -75,10 +75,10 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
         await Task.WhenAll(tasks);
     }
 
-    private IEnumerable<EntityEntry<IEntity>> GetTrackedEntities()
+    private IEnumerable<EntityEntry<T>> GetTrackedEntities<T>() where T : class
     {
         return ChangeTracker
-            .Entries<IEntity>();
+            .Entries<T>();
     }
 
     private IEnumerable<Event> GetEventsFromEntities(IEnumerable<EntityEntry<IEntity>> entities)
