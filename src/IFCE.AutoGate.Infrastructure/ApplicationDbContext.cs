@@ -25,6 +25,7 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
     public virtual DbSet<Driver> Drivers { get; set; }
     public virtual DbSet<Vehicle> Vehicles { get; set; }
     public DbSet<VehicleCategory> VehicleCategories { get; set; }
+    public DbSet<Transit> Transits { get; set; }
 
     public async Task<bool> Commit()
     {

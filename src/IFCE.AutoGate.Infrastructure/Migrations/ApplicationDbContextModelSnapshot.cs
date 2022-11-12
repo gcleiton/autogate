@@ -133,6 +133,50 @@ namespace IFCE.AutoGate.Infrastructure.Migrations
                     b.ToTable("Drivers", (string)null);
                 });
 
+            modelBuilder.Entity("IFCE.AutoGate.Domain.Entities.Transit", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("DriverId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("TransitDate")
+                        .HasColumnType("TIMESTAMP");
+
+                    b.Property<int>("TransitTypeId")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("VehicleId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DriverId");
+
+                    b.HasIndex("TransitTypeId");
+
+                    b.HasIndex("VehicleId");
+
+                    b.ToTable("Transits", (string)null);
+                });
+
+            modelBuilder.Entity("IFCE.AutoGate.Domain.Entities.TransitType", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TransitTypes", (string)null);
+                });
+
             modelBuilder.Entity("IFCE.AutoGate.Domain.Entities.Vehicle", b =>
                 {
                     b.Property<Guid>("Id")
@@ -203,6 +247,33 @@ namespace IFCE.AutoGate.Infrastructure.Migrations
                     b.ToTable("VehicleCategories", (string)null);
                 });
 
+            modelBuilder.Entity("IFCE.AutoGate.Domain.Entities.Transit", b =>
+                {
+                    b.HasOne("IFCE.AutoGate.Domain.Entities.Driver", "Driver")
+                        .WithMany("Transits")
+                        .HasForeignKey("DriverId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("IFCE.AutoGate.Domain.Entities.TransitType", "TransitType")
+                        .WithMany()
+                        .HasForeignKey("TransitTypeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("IFCE.AutoGate.Domain.Entities.Vehicle", "Vehicle")
+                        .WithMany("Transits")
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Driver");
+
+                    b.Navigation("TransitType");
+
+                    b.Navigation("Vehicle");
+                });
+
             modelBuilder.Entity("IFCE.AutoGate.Domain.Entities.Vehicle", b =>
                 {
                     b.HasOne("IFCE.AutoGate.Domain.Entities.VehicleCategory", "Category")
@@ -224,7 +295,14 @@ namespace IFCE.AutoGate.Infrastructure.Migrations
 
             modelBuilder.Entity("IFCE.AutoGate.Domain.Entities.Driver", b =>
                 {
+                    b.Navigation("Transits");
+
                     b.Navigation("Vehicles");
+                });
+
+            modelBuilder.Entity("IFCE.AutoGate.Domain.Entities.Vehicle", b =>
+                {
+                    b.Navigation("Transits");
                 });
 
             modelBuilder.Entity("IFCE.AutoGate.Domain.Entities.VehicleCategory", b =>
