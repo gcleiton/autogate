@@ -5,7 +5,9 @@ namespace IFCE.AutoGate.Domain.Entities;
 
 public class Driver : Entity, ISoftDelete, IAggregateRoot
 {
+    private readonly IList<Transit> _transits = new List<Transit>();
     private readonly IList<Vehicle> _vehicles = new List<Vehicle>();
+
 
     // EF Constructor
     private Driver()
@@ -31,6 +33,7 @@ public class Driver : Entity, ISoftDelete, IAggregateRoot
     public string License { get; }
 
     public IReadOnlyCollection<Vehicle> Vehicles => _vehicles.ToList();
+    public IReadOnlyCollection<Transit> Transits => _transits.ToList();
 
     public DateTime? DisabledAt { get; private set; }
 
