@@ -24,7 +24,7 @@ public class LoadAdministratorByIdQueryHandler : QueryHandler,
 
         if (administrator == null)
         {
-            AddError(new NotFoundError("Administrador não encontrado"));
+            Failure(new NotFoundError("Administrador não encontrado"));
             return null;
         }
 

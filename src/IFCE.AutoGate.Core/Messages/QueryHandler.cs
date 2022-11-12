@@ -16,7 +16,7 @@ public abstract class QueryHandler
         _notification = notification;
     }
 
-    public void AddError(Error error)
+    public void Failure(Error error)
     {
         _notification.AddError(error);
     }
