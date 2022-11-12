@@ -1,5 +1,6 @@
 using IFCE.AutoGate.Application.UseCases.CreateDriver;
 using IFCE.AutoGate.Application.UseCases.DeleteDriver;
+using IFCE.AutoGate.Application.UseCases.LoadDrivers;
 using IFCE.AutoGate.Application.UseCases.ReactivateDriver;
 using IFCE.AutoGate.Application.UseCases.UpdateDriver;
 using IFCE.AutoGate.Core.Contracts;
@@ -17,6 +18,14 @@ public class DriverController : BaseController
     public DriverController(IMediatorHandler mediator, INotification notification) : base(notification)
     {
         _mediator = mediator;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> LoadAll([FromQuery] LoadDriversQuery query)
+    {
+        var result = await _mediator.SendQuery(query);
+
+        return OkResponse(result);
     }
 
     [HttpPost]
