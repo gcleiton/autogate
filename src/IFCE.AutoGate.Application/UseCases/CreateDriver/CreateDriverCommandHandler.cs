@@ -71,7 +71,9 @@ public class CreateDriverCommandHandler : CommandHandler<CreateDriverCommand>,
     private Driver MapDriver(CreateDriverCommand command)
     {
         var vehicles = command.Vehicles.Select(dto => new Vehicle(dto.Plate, dto.Model, dto.CategoryId));
-        return new Driver(command.Name, command.Email, command.BirthDate, command.Phone, command.License,
-            command.CardNumber, vehicles.ToList());
+        var driver = new Driver(command.Name, command.Email, command.BirthDate, command.Phone, command.License,
+            command.CardNumber, vehicles);
+
+        return driver;
     }
 }

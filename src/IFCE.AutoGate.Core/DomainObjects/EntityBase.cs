@@ -7,15 +7,19 @@ public abstract class EntityBase : IEntity
 {
     private readonly List<Event> _events;
 
-    protected EntityBase()
+    protected EntityBase(Guid id)
     {
-        Id = Guid.NewGuid();
+        Id = id == Guid.Empty ? Guid.NewGuid() : id;
         _events = new List<Event>();
+    }
+
+    protected EntityBase() : this(Guid.NewGuid())
+    {
     }
 
     public IReadOnlyCollection<Event> Events => _events.AsReadOnly();
 
-    public Guid Id { get; protected set; }
+    public Guid Id { get; set; }
 
     #region Overrides
 

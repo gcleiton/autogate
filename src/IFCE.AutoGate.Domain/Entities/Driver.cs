@@ -5,8 +5,7 @@ namespace IFCE.AutoGate.Domain.Entities;
 
 public class Driver : Entity, ISoftDelete, IAggregateRoot
 {
-    private readonly IList<Vehicle> _vehicles;
-    private ISoftDelete _softDeleteImplementation;
+    private readonly IList<Vehicle> _vehicles = new List<Vehicle>();
 
     // EF Constructor
     private Driver()
@@ -14,7 +13,7 @@ public class Driver : Entity, ISoftDelete, IAggregateRoot
     }
 
     public Driver(string name, string email, DateOnly bornAt, string phone, string license, string tag,
-        IList<Vehicle> vehicles)
+        IEnumerable<Vehicle> vehicles, Guid id = default) : base(id)
     {
         Name = name;
         Email = email;
@@ -22,7 +21,7 @@ public class Driver : Entity, ISoftDelete, IAggregateRoot
         Phone = phone;
         License = license;
         Tag = tag;
-        _vehicles = vehicles;
+        _vehicles = vehicles.ToList();
     }
 
     public string Name { get; }
