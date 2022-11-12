@@ -10,6 +10,14 @@ public class DriverRepository : Repository<Driver>, IDriverRepository
     {
     }
 
+    public Task<Driver> LoadById(Guid id)
+    {
+        return _context.Drivers
+            .AsNoTracking()
+            .Include(d => d.Vehicles).ThenInclude(v => v.Category)
+            .FirstOrDefaultAsync(d => d.Id == id);
+    }
+
     public void Add(Driver driver)
     {
         _context.Drivers.Add(driver);
