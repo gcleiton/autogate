@@ -1,5 +1,6 @@
 using IFCE.AutoGate.Application.UseCases.CreateDriver;
 using IFCE.AutoGate.Application.UseCases.DeleteDriver;
+using IFCE.AutoGate.Application.UseCases.LoadDriverById;
 using IFCE.AutoGate.Application.UseCases.LoadDrivers;
 using IFCE.AutoGate.Application.UseCases.ReactivateDriver;
 using IFCE.AutoGate.Application.UseCases.UpdateDriver;
@@ -24,6 +25,14 @@ public class DriverController : BaseController
     public async Task<IActionResult> LoadAll([FromQuery] LoadDriversQuery query)
     {
         var result = await _mediator.SendQuery(query);
+
+        return OkResponse(result);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> LoadById(Guid id)
+    {
+        var result = await _mediator.SendQuery(new LoadDriverByIdQuery(id));
 
         return OkResponse(result);
     }
