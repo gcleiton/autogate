@@ -12,13 +12,13 @@ public class UpdateDriverValidator : AbstractValidator<UpdateDriverCommand>
         RuleFor(c => c.Photo).SetValidator(new PhotoValidator());
 
         RuleFor(c => c.Name)
-            .NotNull()
+            .NotEmpty()
             .WithMessage("O nome é obrigatório")
             .MaximumLength(80)
             .WithMessage("O nome atingiu o tamanho máximo de 80 caracteres");
 
         RuleFor(c => c.Email)
-            .NotNull()
+            .NotEmpty()
             .WithMessage("O e-mail é obrigatório")
             .EmailAddress()
             .WithMessage("O e-mail informado é inválido")
@@ -26,35 +26,30 @@ public class UpdateDriverValidator : AbstractValidator<UpdateDriverCommand>
             .WithMessage("O e-mail atingiu o limite máximo de 80 caracteres");
 
         RuleFor(c => c.License)
-            .Cascade(CascadeMode.Stop)
-            .NotNull()
+            .NotEmpty()
             .WithMessage("O número da licença é obrigatório")
             .Must(BeAValidLicense)
             .WithMessage("O número da licença deve ser válido");
 
         RuleFor(c => c.Phone)
-            .Cascade(CascadeMode.Stop)
-            .NotNull()
+            .NotEmpty()
             .WithMessage("O telefone é obrigatório")
             .Length(9, 11)
             .WithMessage("O formato de telefone deve ser válido");
 
         RuleFor(c => c.BirthDate)
-            .NotNull()
+            .NotEmpty()
             .WithMessage("A data de nascimento é obrigatório")
             .Must(BeAValidAge)
             .WithMessage("A data de nascimento deve ser válida");
 
-        RuleFor(c => c.CardNumber)
-            .NotNull()
-            .WithMessage("O número do cartão de acesso é obrigatório");
-
         RuleFor(c => c.Vehicles)
-            .Cascade(CascadeMode.Stop)
-            .NotNull()
+            .NotEmpty()
             .WithMessage("O motorista deve ter pelo menos um veículo associado")
             .Must(BeAValidVehiclesWithUniquePlate)
-            .WithMessage("Não é possível cadastrar mais de um veículo com placa igual");
+            .WithMessage("Não é possível cadastrar mais de um veículo com placa igual")
+            .Must(BeAValidVehiclesWithUniqueCardNumber)
+            .WithMessage("Não é possível cadastrar mais de um veículo com cartão de acesso igual");
 
         RuleForEach(c => c.Vehicles).SetValidator(new VehicleValidator());
     }
@@ -62,6 +57,11 @@ public class UpdateDriverValidator : AbstractValidator<UpdateDriverCommand>
     private bool BeAValidVehiclesWithUniquePlate(IEnumerable<DriverVehicleDto> vehicles)
     {
         return vehicles.Count() == vehicles.Select(vehicle => vehicle.Plate).Distinct().Count();
+    }
+
+    private bool BeAValidVehiclesWithUniqueCardNumber(IEnumerable<DriverVehicleDto> vehicles)
+    {
+        return vehicles.Count() == vehicles.Select(vehicle => vehicle.CardNumber).Distinct().Count();
     }
 
     private bool BeAValidLicense(string license)

@@ -20,6 +20,10 @@ public class VehicleValidator : AbstractValidator<DriverVehicleDto>
             .MaximumLength(64)
             .WithMessage("O modelo do veículo {CollectionIndex} atingiu o limite máximo de 64 caracteres");
 
+        RuleFor(c => c.CardNumber)
+            .NotEmpty()
+            .WithMessage("O número do cartão de acesso do veículo {CollectionIndex} é obrigatório");
+
         RuleFor(v => v.CategoryId)
             .NotEmpty()
             .WithMessage("A categoria do veículo {CollectionIndex} é obrigatório");

@@ -10,6 +10,14 @@ public class DriverRepository : Repository<Driver>, IDriverRepository
     {
     }
 
+    public Task<Driver> LoadById(Guid id)
+    {
+        return _context.Drivers
+            .AsNoTracking()
+            .Include(d => d.Vehicles).ThenInclude(v => v.Category)
+            .FirstOrDefaultAsync(d => d.Id == id);
+    }
+
     public void Add(Driver driver)
     {
         _context.Drivers.Add(driver);
@@ -36,6 +44,11 @@ public class DriverRepository : Repository<Driver>, IDriverRepository
     public Task<bool> CheckByVehiclePlates(IEnumerable<string> plates)
     {
         return _context.Vehicles.AnyAsync(v => plates.Contains(v.Plate));
+    }
+
+    public Task<bool> CheckByVehicleTags(IEnumerable<string> tags)
+    {
+        return _context.Vehicles.AnyAsync(v => tags.Contains(v.Tag));
     }
 
     public Task<bool> CheckByVehiclePlates(IEnumerable<string> plates, Guid exceptDriverId)

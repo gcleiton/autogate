@@ -12,7 +12,7 @@ public class Driver : Entity, ISoftDelete, IAggregateRoot
     {
     }
 
-    public Driver(string name, string email, DateOnly bornAt, string phone, string license, string tag,
+    public Driver(string name, string email, DateOnly bornAt, string phone, string license,
         IEnumerable<Vehicle> vehicles, Guid id = default) : base(id)
     {
         Name = name;
@@ -20,7 +20,6 @@ public class Driver : Entity, ISoftDelete, IAggregateRoot
         BornAt = bornAt;
         Phone = phone;
         License = license;
-        Tag = tag;
         _vehicles = vehicles.ToList();
     }
 
@@ -30,7 +29,6 @@ public class Driver : Entity, ISoftDelete, IAggregateRoot
     public DateOnly BornAt { get; }
     public string Phone { get; }
     public string License { get; }
-    public string Tag { get; }
 
     public IReadOnlyCollection<Vehicle> Vehicles => _vehicles.ToList();
 

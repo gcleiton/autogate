@@ -52,10 +52,6 @@ public class CreateDriverCommandHandler : CommandHandler<CreateDriverCommand>,
         if (emailAlreadyExists)
             return new AlreadyExistsError("O e-mail informado já está em uso por outro motorista.");
 
-        var tagAlreadyExists = await _driverRepository.CheckBy(d => d.Tag == command.CardNumber);
-        if (tagAlreadyExists)
-            return new AlreadyExistsError("O número do cartão já está em uso por outro motorista.");
-
         var licenseAlreadyExists = await _driverRepository.CheckBy(d => d.License == command.License);
         if (licenseAlreadyExists)
             return new AlreadyExistsError("A licença já está em uso por outro motorista.");
@@ -65,14 +61,20 @@ public class CreateDriverCommandHandler : CommandHandler<CreateDriverCommand>,
         if (anyPlateAlreadyExists)
             return new AlreadyExistsError("Um ou mais veículos já está em uso por outro motorista.");
 
+        var tags = command.Vehicles.Select(v => v.CardNumber);
+        var anyTagAlreadyExists = await _driverRepository.CheckByVehicleTags(tags);
+        if (anyTagAlreadyExists)
+            return new AlreadyExistsError("Um ou mais cartões já está em uso por outro motorista.");
+
         return null;
     }
 
     private Driver MapDriver(CreateDriverCommand command)
     {
-        var vehicles = command.Vehicles.Select(dto => new Vehicle(dto.Plate, dto.Model, dto.CategoryId));
+        var vehicles =
+            command.Vehicles.Select(dto => new Vehicle(dto.Plate, dto.Model, dto.CardNumber, dto.CategoryId));
         var driver = new Driver(command.Name, command.Email, command.BirthDate, command.Phone, command.License,
-            command.CardNumber, vehicles);
+            vehicles);
 
         return driver;
     }

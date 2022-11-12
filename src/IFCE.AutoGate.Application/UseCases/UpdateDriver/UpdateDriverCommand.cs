@@ -13,7 +13,6 @@ public class UpdateDriverCommand : Command<bool>
     public DateOnly BirthDate { get; set; }
     public string Phone { get; set; }
     public string License { get; set; }
-    public string CardNumber { get; set; }
 
     public IEnumerable<DriverVehicleDto> Vehicles { get; set; }
 }

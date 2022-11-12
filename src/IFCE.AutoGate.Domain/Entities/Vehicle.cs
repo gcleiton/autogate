@@ -9,19 +9,21 @@ public class Vehicle : Entity
     {
     }
 
-    public Vehicle(string plate, string model, Guid categoryId, Guid id = default) : base(id)
+    public Vehicle(string plate, string model, string tag, Guid categoryId, Guid id = default) : base(id)
     {
         Plate = plate;
         Model = model;
+        Tag = tag;
         CategoryId = categoryId;
     }
 
     public string Plate { get; }
     public string Model { get; }
+    public string Tag { get; }
     public Guid CategoryId { get; }
-    public Guid DriverId { get; private set; }
+    public Guid DriverId { get; }
 
-    public VehicleCategory Category { get; private set; }
+    public VehicleCategory Category { get; }
 
     public Driver Driver { get; set; }
 }
