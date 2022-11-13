@@ -10,6 +10,8 @@ public interface IDriverRepository : IRepository<Driver>
     void Update(Driver driver);
 
     void AddTransit(Transit transit);
+    Task<Transit> LoadTransitById(Guid id);
+    Task<int> CountTransitQuantityByDriverId(Guid id);
 
     Task<bool> CheckByVehiclePlates(IEnumerable<string> plates);
     Task<bool> CheckByVehicleTags(IEnumerable<string> tags);
