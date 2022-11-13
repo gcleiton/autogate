@@ -1,6 +1,8 @@
 using FluentValidation;
+using IFCE.AutoGate.Application.Events.TransitAuthorized;
 using IFCE.AutoGate.Core.DomainObjects;
 using IFCE.AutoGate.Core.Messages;
+using IFCE.AutoGate.Domain.Contracts.Gateways;
 using IFCE.AutoGate.Domain.Contracts.Repositories;
 using IFCE.AutoGate.Domain.Entities;
 using IFCE.AutoGate.Domain.Errors;
@@ -12,12 +14,14 @@ namespace IFCE.AutoGate.Application.UseCases.AddTransit;
 public class AddTransitCommandHandler : CommandHandler<AddTransitCommand>, IRequestHandler<AddTransitCommand, bool>
 {
     private readonly IDriverRepository _driverRepository;
+    private readonly IMediatorHandler _mediator;
 
     public AddTransitCommandHandler(IValidator<AddTransitCommand> validator, INotification notification,
-        IDriverRepository driverRepository) : base(
+        IDriverRepository driverRepository, IMediatorHandler mediator) : base(
         validator, notification)
     {
         _driverRepository = driverRepository;
+        _mediator = mediator;
     }
 
     public async Task<bool> Handle(AddTransitCommand command, CancellationToken cancellationToken)
@@ -35,6 +39,8 @@ public class AddTransitCommandHandler : CommandHandler<AddTransitCommand>, IRequ
         _driverRepository.AddTransit(transit);
         var isSuccess = await _driverRepository.UnitOfWork.Commit();
 
-        return isSuccess || Failure(new UnexpectedError());
+        if (isSuccess) await _mediator.PublishEvent(new TransitAuthorizedEvent(transit.Id));
+
+        return Failure(new UnexpectedError());
     }
 }
