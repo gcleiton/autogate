@@ -4,53 +4,40 @@ on:
   push:
     branches: 
       - main
-  pull_request:
-    branches: 
-      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+      - name: 'Checkout GitHub Action'
+        uses: actions/checkout@main
+        
+      - uses: microsoft/variable-substitution@v1
         with:
-          dotnet-version: 6.0.x
-      - name: Restore dependencies
-        run: dotnet restore
-      - name: Build
-        run: dotnet build --no-restore
-#      - name: Test
-#        run: dotnet test --no-build --verbosity normal
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    if: success() && github.ref == 'refs/heads/main'
-    steps:
-      - uses: actions/checkout@v3
-      - name: App settings variable substitution
-        uses: microsoft/variable-substitution@v1
-        with:
-          files: 'src/IFCE.AutoGate.API/appsettings.json'
+          files: './src/IFCE.AutoGate.API/appsettings.json'
         env:
-          ConnectionStrings.DefaultConnection: ${{ secrets.DB_CONNECTION_STRING }}
-          JWTSettings.Key: ${{ secrets.JWT_KEY }}
-          JWTSettings.Issuer: ${{ secrets.JWT_ISSUER }}
-          JWTSettings.Audience: ${{ secrets.JWT_AUDIENCE }}
-          JWTSettings.ExpirationInMs: ${{ secrets.JWT_EXPIRATION_IN_MS }}
-          MailSettings.DisplayName: ${{ secrets.MAIL_DISPLAY_NAME }}
-          MailSettings.From: ${{ secrets.MAIL_FROM }}
-          MailSettings.Username: ${{ secrets.MAIL_USERNAME }}
-          MailSettings.Password: ${{ secrets.MAIL_PASSWORD }}
-          MailSettings.Host: ${{ secrets.MAIL_HOST }}
-          MailSettings.Port: ${{ secrets.MAIL_PORT }}
-          MailSettings.UseSSL: ${{ secrets.MAIL_USE_SSL }}
-          
-      - uses: akhileshns/heroku-deploy@v3.12.12
+          "ConnectionStrings.DefaultConnection": ${{ secrets.DB_CONNECTION_STRING }}
+        
+      - name: 'Login via Azure CLI'
+        uses: azure/login@v1
         with:
-          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_app_name: "ifce-autogate"
-          heroku_email: "gcleiton.dev@gmail.com"
-          usedocker: true
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+            
+      - uses: azure/docker-login@v1
+        with: 
+          login-server: autogate.azurecr.io
+          username: ${{ secrets.AZURE_REGISTRY_USERNAME }}
+          password: ${{ secrets.AZURE_REGISTRY_PASSWORD }}
+          
+      - run: |
+          docker build . -t autogate.azurecr.io/autogate:${{ github.sha }}
+          docker push autogate.azurecr.io/autogate:${{ github.sha }}
+
+      - uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'autogate-api'
+          images: 'autogate.azurecr.io/autogate:${{ github.sha }}'
+ 
+      - name: Azure logout
+        run: |
+          az logout
