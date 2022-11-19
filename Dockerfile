@@ -1,8 +1,11 @@
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
+EXPOSE 80
+
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENV ASPNETCORE_URLS=http://+:8000;http://+:80;
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-RUN set ASPNETCORE_ENVIRONMENT=Development
 WORKDIR /src
 COPY ["src/IFCE.AutoGate.API/IFCE.AutoGate.API.csproj", "IFCE.AutoGate.API/"]
 COPY ["src/IFCE.AutoGate.Core/IFCE.AutoGate.Core.csproj", "IFCE.AutoGate.Core/"]
@@ -21,4 +24,4 @@ RUN dotnet publish "IFCE.AutoGate.API.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-CMD ASPNETCORE_ENVIRONMENT="Development" ASPNETCORE_URLS=http://*:$PORT dotnet IFCE.AutoGate.API.dll
+ENTRYPOINT ["dotnet", "IFCE.AutoGate.API.dll"]
