@@ -21,6 +21,6 @@ public class TransitController : BaseController
     {
         await _mediator.SendCommand(command);
 
-        return NoContentResponse();
+        return CreatedResponse("", "Trânsito inserido com sucesso!");
     }
 }
