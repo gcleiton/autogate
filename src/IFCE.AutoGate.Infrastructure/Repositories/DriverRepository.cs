@@ -60,6 +60,12 @@ public class DriverRepository : Repository<Driver>, IDriverRepository
         return _context.Transits.CountAsync(t => t.DriverId == id);
     }
 
+    public async Task<IEnumerable<Transit>> LoadTransitsByDriverId(Guid id, int quantity)
+    {
+        return _context.Transits.AsNoTracking().Include(t => t.Driver).Include(t => t.Vehicle)
+            .ThenInclude(v => v.Category).Skip(0).Take(quantity).ToList();
+    }
+
     public Task<bool> CheckByVehiclePlates(IEnumerable<string> plates)
     {
         return _context.Vehicles.AnyAsync(v => plates.Contains(v.Plate));
