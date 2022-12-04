@@ -21,6 +21,7 @@ public class TransitAuthorizedEventHandler : INotificationHandler<TransitAuthori
     {
         var transit = await _driverRepository.LoadTransitById(message.TransitId);
         var transitTotal = await _driverRepository.CountTransitQuantityByDriverId(transit.DriverId);
+        var lastTransits = await _driverRepository.LoadTransitsByDriverId(transit.DriverId, 5);
 
         var result = new AuthorizedTransitDto
         {
@@ -28,11 +29,20 @@ public class TransitAuthorizedEventHandler : INotificationHandler<TransitAuthori
             Email = transit.Driver.Email,
             Phone = transit.Driver.Phone,
             License = transit.Driver.License,
+            PhotoUrl = $"https://autogate.blob.core.windows.net/drivers/{transit.Driver.Photo}",
             VehiclePlate = transit.Vehicle.Plate,
             VehicleModel = transit.Vehicle.Model,
             VehicleCategory = transit.Vehicle.Category.Name,
             TransitType = transit.TransitTypeId,
-            TransitTotal = transitTotal
+            TransitTotal = transitTotal,
+            LastTransits = lastTransits.Select(lastTransit => new LastTransitDto
+            {
+                TransitAt = lastTransit.TransitDate,
+                TransitType = lastTransit.TransitTypeId,
+                VehicleCategory = lastTransit.Vehicle.Category.Name,
+                VehicleModel = lastTransit.Vehicle.Model,
+                VehiclePlate = lastTransit.Vehicle.Plate
+            })
         };
 
         await _hubContext.Clients.All.SendAsync("AuthorizedTransit", result, cancellationToken);

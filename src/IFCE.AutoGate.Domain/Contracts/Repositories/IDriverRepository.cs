@@ -12,7 +12,7 @@ public interface IDriverRepository : IRepository<Driver>
     void AddTransit(Transit transit);
     Task<Transit> LoadTransitById(Guid id);
     Task<int> CountTransitQuantityByDriverId(Guid id);
-
+    Task<IEnumerable<Transit>> LoadTransitsByDriverId(Guid id, int quantity);
     Task<bool> CheckByVehiclePlates(IEnumerable<string> plates);
     Task<bool> CheckByVehicleTags(IEnumerable<string> tags);
 
