@@ -63,7 +63,7 @@ public class DriverRepository : Repository<Driver>, IDriverRepository
     public async Task<IEnumerable<Transit>> LoadTransitsByDriverId(Guid id, int quantity)
     {
         return _context.Transits.AsNoTracking().Include(t => t.Driver).Include(t => t.Vehicle)
-            .ThenInclude(v => v.Category).Skip(0).Take(quantity).ToList();
+            .ThenInclude(v => v.Category).OrderByDescending(t => t.TransitDate).Skip(0).Take(quantity).ToList();
     }
 
     public Task<bool> CheckByVehiclePlates(IEnumerable<string> plates)
